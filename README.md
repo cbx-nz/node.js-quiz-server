@@ -20,9 +20,8 @@ A real-time, Kahoot-style quiz game built with Node.js, Express, and Socket.io. 
 - **Answer Reveal Control**: Answers hidden until all players submit or host manually reveals
 
 ### Subject-Specific Content
-- **5 Built-in Subjects**:
+- **4 Built-in Subjects**:
   - General Knowledge (15 questions)
-  - English NZ Year 9-10 (31 questions - NZ Curriculum aligned)
   - Mathematics (15 questions)
   - Science (15 questions)
   - History (15 questions)
