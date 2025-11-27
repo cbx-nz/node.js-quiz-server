@@ -25,7 +25,7 @@
 1. Select a subject from the dropdown (General, English, Math, Science, History, or Earth Science)
 2. Click "Create New Game Room"
 3. Share the 6-character room code with players
-4. Click "🖥️ Open Presenter View" to display on a projector/big screen
+4. Click "🖥️ Open Presenter View" to display on a projector/big screen (room code and subject will stay visible throughout the game!)
 5. Wait for players to join (you'll see them appear)
 6. Click "▶️ Start Game" (requires at least 1 player)
 7. Click "➡️ Next Question" to send each question
@@ -33,6 +33,8 @@
 9. Use "❌ Kick" button to remove players with inappropriate names
 10. Use broadcast to send messages like "Final Round!"
 11. Click "⏹️ End Game" when finished
+
+**💡 Tip:** The presenter view keeps the room code visible at the top of the screen during questions, so latecomers can still join!
 
 ### As Player
 

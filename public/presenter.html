@@ -54,6 +54,17 @@
       opacity: 0.9;
     }
 
+    .subject-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.3);
+      padding: 15px 40px;
+      border-radius: 30px;
+      font-size: 28px;
+      margin-top: 20px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+    }
+
     .room-code-display .code {
       font-size: 120px;
       font-weight: bold;
@@ -108,6 +119,32 @@
     #questionScreen {
       flex-direction: column;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .top-info-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .room-code-small {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 10px 25px;
+      border-radius: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .subject-badge-small {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 10px 25px;
+      border-radius: 20px;
+      font-size: 24px;
+      font-weight: 600;
     }
 
     .question-container {
@@ -373,6 +410,7 @@
       <div class="room-code-display">
         <h2>Join at: <a href="https://cbx.rf.gd/public/EOY">https://cbx.rf.gd/public/EOY</a></h2>
         <div class="code" id="presenterRoomCode">------</div>
+        <div class="subject-badge" id="presenterSubjectBadge">Subject: Loading...</div>
       </div>
       <div class="join-instructions">
         Enter the code above to join!
@@ -386,6 +424,10 @@
 
   <!-- Question Display Screen -->
   <div id="questionScreen" class="screen">
+    <div class="top-info-bar">
+      <div class="room-code-small" id="questionRoomCode">------</div>
+      <div class="subject-badge-small" id="questionSubjectBadge">Subject</div>
+    </div>
     <div class="question-container">
       <div class="question-header">
         <div class="question-number-badge" id="presenterQuestionNumber">Question 1 of 10</div>
@@ -426,5 +468,6 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="presenter.js"></script>
+  <script src="navigation-modal.js"></script>
 </body>
 </html>

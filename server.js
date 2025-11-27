@@ -24,14 +24,16 @@ app.get('/api/subjects', (req, res) => {
 
 // Load all question files
 const subjects = {};
-const questionFiles = {
-  'general': 'general-knowledge.json',
-  'english': 'english-nz-year9-10.json',
-  'mathematics': 'mathematics.json',
-  'science': 'science.json',
-  'history': 'history.json',
-  'earth-science': 'earth-science-year9-10.json'
-};
+let questionFiles = {};
+
+// Load question files mapping from JSON
+try {
+  const questionFilesData = fs.readFileSync(path.join(__dirname, 'question-files.json'), 'utf8');
+  questionFiles = JSON.parse(questionFilesData);
+  console.log('Loaded question files mapping from question-files.json');
+} catch (error) {
+  console.error('Error loading question-files.json:', error);
+}
 
 try {
   for (const [key, filename] of Object.entries(questionFiles)) {
@@ -411,9 +413,15 @@ io.on('connection', (socket) => {
     rooms[roomCode].presenters.push(socket.id);
     socket.join(roomCode);
     
-    // Send current state to presenter
+    // Send current state to presenter including subject info
     socket.emit('player-list-updated', {
       players: Object.values(rooms[roomCode].players)
+    });
+    
+    // Send subject information
+    socket.emit('subject-info', {
+      subject: rooms[roomCode].subject,
+      questionCount: rooms[roomCode].questions.length
     });
 
     // If game has started and there's a current question, send it

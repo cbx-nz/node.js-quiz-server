@@ -46,6 +46,11 @@ A real-time, Kahoot-style quiz game built with Node.js, Express, and Socket.io. 
 - **Username Filtering**: Automatic blocking of 50+ inappropriate words
 - **Host Kick Controls**: Remove problematic players instantly
 - **Clean Content**: Pre-moderated question sets
+
+### Navigation & Convenience
+- **Quick Navigation Modal**: Type `.?` on any page to see all available sections
+- **Easy Subject Management**: Add new subjects by editing `question-files.json` (no server code changes needed!)
+- **Comprehensive Documentation**: Built-in docs at `/docs.html`
   - Open-ended text responses
 
 - **Real-Time Multiplayer:**
@@ -183,8 +188,22 @@ Questions are stored in `questions/questions.json` as an array. Each question ob
 
 ## 🛠️ Customization
 
-### Adding Questions
-Edit `questions/questions.json` to add more questions. Follow the format above.
+### Adding New Subjects
+1. Create your question JSON file (use `/creator.html` for easy creation)
+2. Save it to the `questions/` folder
+3. Add the subject to `question-files.json`:
+```json
+{
+  "general": "general-knowledge.json",
+  "your-new-subject": "your-questions.json",
+  "english": "english-nz-year9-10.json"
+}
+```
+4. Restart the server
+5. Your subject will appear in the host's dropdown!
+
+### Adding Questions to Existing Subjects
+Edit the corresponding JSON file in `questions/` folder. Follow the format of existing questions.
 
 ### Changing Port
 Set environment variable: `PORT=8080 npm start`
@@ -192,6 +211,20 @@ Set environment variable: `PORT=8080 npm start`
 ### Styling
 - Edit CSS in `public/index.html` for player interface
 - Edit CSS in `public/host.html` for host dashboard
+
+## ⌨️ Navigation Tips
+
+### Quick Navigation Modal
+On any page in the application, type **`.?`** (period followed by question mark) to open a navigation modal that shows all available pages:
+- Home / Player Join
+- Host Dashboard
+- Presenter View
+- Question Creator
+- Documentation
+
+Press **Escape** to close the modal, or click any page to navigate instantly.
+
+**Note:** The shortcut won't interfere when you're typing in input fields or text areas.
 
 ## 📦 Dependencies
 

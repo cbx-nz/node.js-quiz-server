@@ -13,6 +13,8 @@ const resultsScreen = document.getElementById('resultsScreen');
 const presenterRoomCode = document.getElementById('presenterRoomCode');
 const waitingPlayerCount = document.getElementById('waitingPlayerCount');
 const waitingPlayersList = document.getElementById('waitingPlayersList');
+const presenterSubjectBadge = document.getElementById('presenterSubjectBadge');
+const questionSubjectBadge = document.getElementById('questionSubjectBadge');
 
 const presenterQuestionNumber = document.getElementById('presenterQuestionNumber');
 const presenterQuestionText = document.getElementById('presenterQuestionText');
@@ -30,6 +32,25 @@ const presenterLeaderboard = document.getElementById('presenterLeaderboard');
 let players = [];
 let currentQuestionData = null;
 let answerCounts = {};
+let currentSubject = 'general';
+let subjectName = 'General Knowledge';
+
+/**
+ * Format subject ID to display name
+ */
+function formatSubjectName(subjectId) {
+  const names = {
+    'general': 'General Knowledge',
+    'english': 'English NZ Year 9-10',
+    'mathematics': 'Mathematics',
+    'science': 'Science',
+    'history': 'History',
+    'earth-science': 'Earth Science Year 9-10'
+  };
+  return names[subjectId] || subjectId.split('-').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ');
+}
 
 /**
  * Show a specific screen
@@ -48,6 +69,7 @@ if (!roomCode) {
   alert('No room code provided! Please open this from the host dashboard.');
 } else {
   presenterRoomCode.textContent = roomCode;
+  document.getElementById('questionRoomCode').textContent = roomCode;
   // Join as presenter (special role)
   socket.emit('presenter-join-room', { roomCode });
 }
@@ -62,6 +84,16 @@ socket.on('player-list-updated', (data) => {
   
   // Update waiting screen player list
   updateWaitingPlayersList();
+});
+
+/**
+ * Handle subject information
+ */
+socket.on('subject-info', (data) => {
+  currentSubject = data.subject;
+  subjectName = formatSubjectName(data.subject);
+  presenterSubjectBadge.textContent = `Subject: ${subjectName}`;
+  questionSubjectBadge.textContent = subjectName;
 });
 
 /**
