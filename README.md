@@ -196,7 +196,6 @@ Questions are stored in `questions/questions.json` as an array. Each question ob
 {
   "general": "general-knowledge.json",
   "your-new-subject": "your-questions.json",
-  "english": "english-nz-year9-10.json"
 }
 ```
 4. Restart the server
@@ -256,6 +255,16 @@ This is a demonstration project showing:
 - Event-driven architecture
 - Clean separation of host and player interfaces
 - Multiple question type handling
+
+## 📝 Recent Updates
+
+**November 2025:**
+- ✅ Fixed scoring synchronization issue - all views (host, client, presenter) now show consistent scores
+- ✅ Fixed host-reveal-answer to properly send score updates to all players
+- ✅ Removed all VS Code linting warnings (inline styles, accessibility, Safari compatibility)
+- ✅ Added proper CSS classes for all styling (no inline styles)
+- ✅ Added `-webkit-backdrop-filter` for Safari support
+- ✅ Improved accessibility with ARIA labels on form elements
 
 ## 📄 License
 

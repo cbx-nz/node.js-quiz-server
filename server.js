@@ -336,6 +336,19 @@ io.on('connection', (socket) => {
       explanation: room.currentQuestion.explanation
     });
 
+    // Send individual results to each player who answered
+    Object.keys(room.players).forEach(playerId => {
+      const playerAnswer = room.answers[playerId];
+      if (playerAnswer) {
+        io.to(playerId).emit('answer-result', {
+          correct: playerAnswer.correct,
+          correctAnswer: room.currentQuestion.answer,
+          explanation: room.currentQuestion.explanation,
+          score: playerAnswer.correct ? calculateScore(room, playerAnswer.timestamp) : 0
+        });
+      }
+    });
+
     console.log(`Host revealed answer in room ${roomCode}`);
   });
 

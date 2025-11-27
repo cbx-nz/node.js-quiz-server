@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/diehyknwd/image/upload/v1734665441/favicon_1_zvl7ls.ico">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
   <title>Question Creator - Quiz Game</title>
   <style>
     * {
@@ -199,6 +201,24 @@
     #correctAnswerSection {
       margin-top: 20px;
     }
+
+    .display-none {
+      display: none;
+    }
+
+    .btn-margin-top {
+      margin-top: 10px;
+    }
+
+    .empty-questions-text {
+      color: #999;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .file-input-label {
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -213,7 +233,7 @@
       
       <div class="form-group">
         <label>Question Type</label>
-        <select id="questionType">
+        <select id="questionType" title="Select question type" aria-label="Choose the type of question">
           <option value="multiple-choice">Multiple Choice</option>
           <option value="truefalse">True/False</option>
           <option value="decision">Decision</option>
@@ -239,7 +259,7 @@
             <button onclick="removeOption(this)">Remove</button>
           </div>
         </div>
-        <button class="btn btn-secondary" style="margin-top: 10px;" onclick="addOption()">+ Add Option</button>
+        <button class="btn btn-secondary btn-margin-top" onclick="addOption()">+ Add Option</button>
       </div>
 
       <div id="correctAnswerSection" class="form-group">
@@ -261,15 +281,15 @@
     <div class="section">
       <h3>Questions List (<span id="questionCount">0</span>)</h3>
       <div class="questions-preview" id="questionsPreview">
-        <p style="color: #999; text-align: center; padding: 40px;">No questions added yet</p>
+        <p class="empty-questions-text">No questions added yet</p>
       </div>
 
       <div class="actions">
         <button class="btn btn-primary" onclick="downloadJSON()">💾 Download JSON</button>
         <button class="btn btn-secondary" onclick="clearAllQuestions()">🗑️ Clear All</button>
-        <label class="btn btn-secondary" style="display: inline-block;">
+        <label class="btn btn-secondary file-input-label">
           📁 Load JSON
-          <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="loadJSON(event)">
+          <input type="file" id="fileInput" accept=".json" class="display-none" onchange="loadJSON(event)">
         </label>
       </div>
     </div>

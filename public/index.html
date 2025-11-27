@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/diehyknwd/image/upload/v1734665441/favicon_1_zvl7ls.ico">
   <title>Quiz Game - Player</title>
   <style>
     * {
@@ -233,7 +234,15 @@
       background: #f8f9fa;
       padding: 15px;
       border-radius: 8px;
-      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+
+    .display-none {
+      display: none;
+    }
+
+    .next-button-green {
+      background: #28a745;
     }
 
     .stats-item {
@@ -349,7 +358,7 @@
         <input type="text" id="playerName" placeholder="Enter your name">
       </div>
       <button id="joinButton">Join Game</button>
-      <div id="joinError" class="error" style="display: none; margin-top: 20px;"></div>
+      <div id="joinError" class="error display-none error-margin-top"></div>
     </div>
 
     <!-- Waiting Screen -->
@@ -374,24 +383,24 @@
       </div>
 
       <!-- Multiple Choice / Decision / True-False Options -->
-      <div id="optionsContainer" class="options" style="display: none;"></div>
+      <div id="optionsContainer" class="options display-none"></div>
 
       <!-- Open-ended Text Input -->
-      <div id="textInputContainer" class="text-input" style="display: none;">
+      <div id="textInputContainer" class="text-input display-none">
         <textarea id="textAnswer" placeholder="Type your answer here..."></textarea>
       </div>
 
       <!-- Flashcard Answer Display -->
-      <div id="flashcardAnswer" style="display: none;"></div>
+      <div id="flashcardAnswer" class="display-none"></div>
 
       <button id="submitButton">Submit Answer</button>
-      <button id="nextButton" style="display: none; background: #28a745;">Ready for Next Question</button>
+      <button id="nextButton" class="display-none next-button-green">Ready for Next Question</button>
 
       <!-- Result Display -->
-      <div id="resultDisplay" style="display: none;"></div>
+      <div id="resultDisplay" class="display-none"></div>
 
       <!-- Statistics -->
-      <div id="statsDisplay" style="display: none;" class="stats"></div>
+      <div id="statsDisplay" class="display-none stats"></div>
     </div>
 
     <!-- End Screen -->

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/diehyknwd/image/upload/v1734665441/favicon_1_zvl7ls.ico">
   <title>Quiz Game - Host Dashboard</title>
   <style>
     * {
@@ -293,6 +294,43 @@
       margin-bottom: 20px;
       text-align: center;
     }
+
+    .display-none {
+      display: none;
+    }
+
+    .welcome-text {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .welcome-subtext {
+      margin-bottom: 30px;
+    }
+
+    .subject-select {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .subject-info {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .code-share-text {
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+
+    .reveal-button {
+      background: #17a2b8;
+    }
   </style>
 </head>
 <body>
@@ -302,16 +340,16 @@
     <!-- Create Room Screen -->
     <div id="createScreen" class="screen active">
       <div class="empty-state">
-        <p style="font-size: 24px; margin-bottom: 20px;">Welcome, Host!</p>
-        <p style="margin-bottom: 30px;">Create a new game room for your players</p>
+        <p class="welcome-text">Welcome, Host!</p>
+        <p class="welcome-subtext">Create a new game room for your players</p>
       </div>
       
       <div class="section">
         <h3>📚 Select Subject</h3>
-        <select id="subjectSelect" style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 20px;">
+        <select id="subjectSelect" class="subject-select" title="Choose a quiz subject" aria-label="Select quiz subject">
           <option value="">Loading subjects...</option>
         </select>
-        <div id="subjectInfo" style="text-align: center; color: #666; margin-bottom: 20px;"></div>
+        <div id="subjectInfo" class="subject-info"></div>
       </div>
       
       <button class="btn-create" id="createRoomButton">Create New Game Room</button>
@@ -323,7 +361,7 @@
       <div class="room-code">
         <h2>🔑 Room Code</h2>
         <div class="code" id="roomCodeDisplay">------</div>
-        <p style="margin-top: 10px; opacity: 0.9;">Share this code with players</p>
+        <p class="code-share-text">Share this code with players</p>
       </div>
 
       <!-- Game Status -->
@@ -335,7 +373,7 @@
         <button class="btn-next" id="nextButton" disabled>➡️ Next Question</button>
         <button class="btn-end" id="endButton" disabled>⏹️ End Game</button>
         <button class="btn-presenter" id="presenterButton">🖥️ Open Presenter View</button>
-        <button class="btn-next" id="revealButton" disabled style="background: #17a2b8;">👁️ Reveal Answer</button>
+        <button class="btn-next reveal-button" id="revealButton" disabled>👁️ Reveal Answer</button>
       </div>
 
       <!-- Broadcast Message -->
@@ -367,7 +405,7 @@
       </div>
 
       <!-- Current Question -->
-      <div class="section" id="currentQuestionSection" style="display: none;">
+      <div class="section display-none" id="currentQuestionSection">
         <h3>❓ Current Question</h3>
         <div class="question-display" id="questionDisplay">
           <span class="question-type" id="questionTypeDisplay"></span>
@@ -385,7 +423,7 @@
       </div>
 
       <!-- Error Display -->
-      <div id="errorDisplay" class="error" style="display: none;"></div>
+      <div id="errorDisplay" class="error display-none"></div>
     </div>
   </div>
 

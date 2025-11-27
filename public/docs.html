@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/diehyknwd/image/upload/v1734665441/favicon_1_zvl7ls.ico">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
   <title>Documentation - Quiz Game</title>
   <style>
     * {
@@ -209,6 +211,30 @@
       font-size: 1.2em;
       margin-right: 5px;
     }
+
+    .quick-start-list {
+      margin-top: 10px;
+      margin-left: 20px;
+    }
+
+    .license-section {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 2px solid #ddd;
+    }
+
+    .license-heading {
+      border: none;
+    }
+
+    .license-text {
+      color: #666;
+      margin-top: 20px;
+    }
+
+    .license-actions {
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
@@ -220,7 +246,7 @@
       <a href="/">🎮 Play Game</a>
       <a href="/host.html">🎛️ Host Dashboard</a>
       <a href="/creator.html">📝 Question Creator</a>
-      <a href="https://github.com/cbx-nz/node.js-quiz-server" target="_blank">📚 GitHub</a>
+      <a href="https://github.com/cbx-nz/node.js-quiz-server" target="_blank" rel="noopener noreferrer">📚 GitHub</a>
     </div>
 
     <!-- Quick Start -->
@@ -229,7 +255,7 @@
       
       <div class="success">
         <strong>Ready to play in 3 steps:</strong>
-        <ol style="margin-top: 10px; margin-left: 20px;">
+        <ol class="quick-start-list">
           <li>Host creates a room at <code>/host.html</code></li>
           <li>Players join at <code>/</code> using the room code</li>
           <li>Host starts the game and controls questions</li>
@@ -469,8 +495,11 @@
   "history": "history.json",
   "earth-science": "earth-science-year9-10.json"
 }</code></pre>
-      <li>Restart the server</li>
-      <li>Your subject will now appear in the host's subject dropdown!</li>
+      </ol>
+      <ol start="4">
+        <li>Restart the server</li>
+        <li>Your subject will now appear in the host's subject dropdown!</li>
+      </ol>
 
       <div class="info">
         <strong>💡 Tip:</strong> Use the "📁 Load JSON" button to edit existing question files. Make your changes, then download again!
@@ -610,11 +639,11 @@
     </div>
 
     <!-- Footer -->
-    <div class="section" style="text-align: center; padding-top: 40px; border-top: 2px solid #ddd;">
-      <h2 style="border: none;">🎓 Educational License</h2>
+    <div class="section license-section">
+      <h2 class="license-heading">🎓 Educational License</h2>
       <p>This quiz game is free to use for educational purposes. Perfect for classrooms, study groups, and learning sessions!</p>
-      <p style="color: #666; margin-top: 20px;">Made with ❤️ for educators and students</p>
-      <div style="margin-top: 30px;">
+      <p class="license-text">Made with ❤️ for educators and students</p>
+      <div class="license-actions">
         <a href="/" class="btn">🎮 Start Playing</a>
         <a href="/host.html" class="btn">🎛️ Host a Game</a>
         <a href="/creator.html" class="btn">📝 Create Questions</a>

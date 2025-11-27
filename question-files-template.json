@@ -1,0 +1,6 @@
+{
+  "general": "general-knowledge.json",
+  "mathematics": "mathematics.json",
+  "science": "science.json",
+  "history": "history.json"
+}

@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/diehyknwd/image/upload/v1734665441/favicon_1_zvl7ls.ico">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
   <title>Quiz Game - Presenter View</title>
   <style>
     * {
@@ -45,6 +47,7 @@
       padding: 40px 80px;
       border-radius: 20px;
       margin-bottom: 40px;
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
     }
 
@@ -62,7 +65,12 @@
       font-size: 28px;
       margin-top: 20px;
       font-weight: 600;
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
+    }
+
+    .display-none {
+      display: none;
     }
 
     .room-code-display .code {
@@ -101,6 +109,7 @@
 
     .waiting-player-card {
       background: rgba(255, 255, 255, 0.2);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       padding: 20px;
       border-radius: 10px;
@@ -126,6 +135,7 @@
       justify-content: space-between;
       padding: 20px 40px;
       background: rgba(0, 0, 0, 0.2);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
     }
 
@@ -137,6 +147,8 @@
       font-weight: bold;
       letter-spacing: 4px;
       font-family: 'Courier New', monospace;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
     }
 
     .subject-badge-small {
@@ -145,6 +157,8 @@
       border-radius: 20px;
       font-size: 24px;
       font-weight: 600;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
     }
 
     .question-container {
@@ -189,6 +203,7 @@
 
     .option-box {
       background: rgba(255, 255, 255, 0.15);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 40px;
@@ -274,6 +289,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
     }
 
@@ -314,6 +330,7 @@
 
     .leaderboard-item {
       background: rgba(255, 255, 255, 0.15);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       padding: 30px 40px;
       margin-bottom: 20px;
@@ -371,6 +388,7 @@
     /* Text/Flashcard Display */
     .text-answer-display {
       background: rgba(255, 255, 255, 0.15);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 60px;
@@ -390,6 +408,7 @@
 
     .response-item {
       background: rgba(255, 255, 255, 0.15);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       padding: 20px;
       border-radius: 10px;
@@ -435,13 +454,13 @@
       </div>
 
       <!-- Options Grid (for multiple choice/true-false) -->
-      <div id="presenterOptionsGrid" class="options-grid" style="display: none;"></div>
+      <div id="presenterOptionsGrid" class="options-grid display-none"></div>
 
       <!-- Text/Flashcard Answer (for flashcard/open questions) -->
-      <div id="presenterTextAnswer" class="text-answer-display" style="display: none;"></div>
+      <div id="presenterTextAnswer" class="text-answer-display display-none"></div>
       
       <!-- Open Response List -->
-      <div id="presenterResponseList" class="response-list" style="display: none;"></div>
+      <div id="presenterResponseList" class="response-list display-none"></div>
     </div>
 
     <div class="stats-bar">
