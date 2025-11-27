@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question Creator - Quiz Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #667eea;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+    }
+
+    .section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .section h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 20px;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .option-item input {
+      flex: 1;
+    }
+
+    .option-item button {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .questions-preview {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .question-card {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border-left: 4px solid #667eea;
+    }
+
+    .question-card h4 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .type-badge {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+
+    #optionsSection,
+    #correctAnswerSection {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Question Creator</h1>
+
+    <div id="errorDisplay" class="error"></div>
+    <div id="successDisplay" class="success"></div>
+
+    <div class="section">
+      <h3>Create New Question</h3>
+      
+      <div class="form-group">
+        <label>Question Type</label>
+        <select id="questionType">
+          <option value="multiple-choice">Multiple Choice</option>
+          <option value="truefalse">True/False</option>
+          <option value="decision">Decision</option>
+          <option value="flashcard">Flashcard</option>
+          <option value="open">Open-ended</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Question Text</label>
+        <textarea id="questionText" placeholder="Enter your question here..."></textarea>
+      </div>
+
+      <div id="optionsSection" class="form-group">
+        <label>Options</label>
+        <div class="options-list" id="optionsList">
+          <div class="option-item">
+            <input type="text" placeholder="Option 1" class="option-input">
+            <button onclick="removeOption(this)">Remove</button>
+          </div>
+          <div class="option-item">
+            <input type="text" placeholder="Option 2" class="option-input">
+            <button onclick="removeOption(this)">Remove</button>
+          </div>
+        </div>
+        <button class="btn btn-secondary" style="margin-top: 10px;" onclick="addOption()">+ Add Option</button>
+      </div>
+
+      <div id="correctAnswerSection" class="form-group">
+        <label>Correct Answer (0-indexed for multiple choice, or text for others)</label>
+        <input type="text" id="correctAnswer" placeholder="e.g., 0 for first option">
+      </div>
+
+      <div class="form-group">
+        <label>Explanation (Optional)</label>
+        <textarea id="explanation" placeholder="Provide an explanation for the answer..."></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-success" onclick="addQuestion()">➕ Add Question</button>
+        <button class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Questions List (<span id="questionCount">0</span>)</h3>
+      <div class="questions-preview" id="questionsPreview">
+        <p style="color: #999; text-align: center; padding: 40px;">No questions added yet</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="downloadJSON()">💾 Download JSON</button>
+        <button class="btn btn-secondary" onclick="clearAllQuestions()">🗑️ Clear All</button>
+        <label class="btn btn-secondary" style="display: inline-block;">
+          📁 Load JSON
+          <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="loadJSON(event)">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let questions = [];
+
+    // Update UI based on question type
+    document.getElementById('questionType').addEventListener('change', (e) => {
+      const type = e.target.value;
+      const optionsSection = document.getElementById('optionsSection');
+      const correctAnswerSection = document.getElementById('correctAnswerSection');
+      
+      if (type === 'multiple-choice' || type === 'decision') {
+        optionsSection.style.display = 'block';
+        correctAnswerSection.style.display = 'block';
+        document.getElementById('correctAnswer').placeholder = 'e.g., 0 for first option';
+      } else if (type === 'truefalse') {
+        optionsSection.style.display = 'block';
+        correctAnswerSection.style.display = 'block';
+        // Set default true/false options
+        const optionInputs = document.querySelectorAll('.option-input');
+        if (optionInputs[0]) optionInputs[0].value = 'True';
+        if (optionInputs[1]) optionInputs[1].value = 'False';
+        document.getElementById('correctAnswer').placeholder = 'e.g., 0 for True, 1 for False';
+      } else if (type === 'flashcard') {
+        optionsSection.style.display = 'none';
+        correctAnswerSection.style.display = 'block';
+        document.getElementById('correctAnswer').placeholder = 'Enter the answer to reveal';
+      } else if (type === 'open') {
+        optionsSection.style.display = 'none';
+        correctAnswerSection.style.display = 'none';
+      }
+    });
+
+    function addOption() {
+      const optionsList = document.getElementById('optionsList');
+      const optionCount = optionsList.children.length + 1;
+      const optionItem = document.createElement('div');
+      optionItem.className = 'option-item';
+      optionItem.innerHTML = `
+        <input type="text" placeholder="Option ${optionCount}" class="option-input">
+        <button onclick="removeOption(this)">Remove</button>
+      `;
+      optionsList.appendChild(optionItem);
+    }
+
+    function removeOption(button) {
+      const optionsList = document.getElementById('optionsList');
+      if (optionsList.children.length > 2) {
+        button.parentElement.remove();
+      } else {
+        showError('Must have at least 2 options');
+      }
+    }
+
+    function addQuestion() {
+      const type = document.getElementById('questionType').value;
+      const questionText = document.getElementById('questionText').value.trim();
+      const explanation = document.getElementById('explanation').value.trim();
+      
+      if (!questionText) {
+        showError('Please enter a question');
+        return;
+      }
+
+      const question = {
+        type: type,
+        question: questionText
+      };
+
+      // Handle options
+      if (type === 'multiple-choice' || type === 'decision' || type === 'truefalse') {
+        const optionInputs = document.querySelectorAll('.option-input');
+        const options = Array.from(optionInputs).map(input => input.value.trim()).filter(val => val);
+        
+        if (options.length < 2) {
+          showError('Please provide at least 2 options');
+          return;
+        }
+        
+        question.options = options;
+        
+        const correctAnswer = document.getElementById('correctAnswer').value.trim();
+        const answerIndex = parseInt(correctAnswer);
+        
+        if (isNaN(answerIndex) || answerIndex < 0 || answerIndex >= options.length) {
+          showError('Please provide a valid correct answer index (0 to ' + (options.length - 1) + ')');
+          return;
+        }
+        
+        question.answer = answerIndex;
+      } else if (type === 'flashcard') {
+        const answer = document.getElementById('correctAnswer').value.trim();
+        if (!answer) {
+          showError('Please provide an answer for the flashcard');
+          return;
+        }
+        question.answer = answer;
+      } else if (type === 'open') {
+        question.answer = 'User response';
+      }
+
+      if (explanation) {
+        question.explanation = explanation;
+      }
+
+      questions.push(question);
+      updateQuestionsPreview();
+      clearForm();
+      showSuccess('Question added successfully!');
+    }
+
+    function updateQuestionsPreview() {
+      const preview = document.getElementById('questionsPreview');
+      const countDisplay = document.getElementById('questionCount');
+      
+      countDisplay.textContent = questions.length;
+      
+      if (questions.length === 0) {
+        preview.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">No questions added yet</p>';
+        return;
+      }
+
+      preview.innerHTML = '';
+      questions.forEach((q, index) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        let optionsHTML = '';
+        if (q.options) {
+          optionsHTML = '<ul style="margin-left: 20px; margin-top: 10px;">';
+          q.options.forEach((opt, i) => {
+            const isCorrect = q.answer === i ? ' ✓' : '';
+            optionsHTML += `<li>${opt}${isCorrect}</li>`;
+          });
+          optionsHTML += '</ul>';
+        } else if (q.type === 'flashcard') {
+          optionsHTML = `<p><strong>Answer:</strong> ${q.answer}</p>`;
+        }
+        
+        card.innerHTML = `
+          <h4><span class="type-badge">${q.type.toUpperCase()}</span> Question ${index + 1}</h4>
+          <p><strong>Q:</strong> ${q.question}</p>
+          ${optionsHTML}
+          ${q.explanation ? `<p style="margin-top: 10px;"><strong>Explanation:</strong> ${q.explanation}</p>` : ''}
+          <button class="btn btn-secondary" style="margin-top: 10px; padding: 5px 10px; font-size: 14px;" onclick="deleteQuestion(${index})">Delete</button>
+        `;
+        preview.appendChild(card);
+      });
+    }
+
+    function deleteQuestion(index) {
+      if (confirm('Delete this question?')) {
+        questions.splice(index, 1);
+        updateQuestionsPreview();
+        showSuccess('Question deleted');
+      }
+    }
+
+    function clearForm() {
+      document.getElementById('questionText').value = '';
+      document.getElementById('explanation').value = '';
+      document.getElementById('correctAnswer').value = '';
+      
+      const optionInputs = document.querySelectorAll('.option-input');
+      optionInputs.forEach(input => input.value = '');
+    }
+
+    function clearAllQuestions() {
+      if (confirm('Delete all questions? This cannot be undone.')) {
+        questions = [];
+        updateQuestionsPreview();
+        showSuccess('All questions cleared');
+      }
+    }
+
+    function downloadJSON() {
+      if (questions.length === 0) {
+        showError('No questions to download');
+        return;
+      }
+
+      const dataStr = JSON.stringify(questions, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'questions-' + Date.now() + '.json';
+      link.click();
+      URL.revokeObjectURL(url);
+      
+      showSuccess('Questions downloaded!');
+    }
+
+    function loadJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const loadedQuestions = JSON.parse(e.target.result);
+          if (!Array.isArray(loadedQuestions)) {
+            showError('Invalid JSON format');
+            return;
+          }
+          
+          questions = loadedQuestions;
+          updateQuestionsPreview();
+          showSuccess(`Loaded ${questions.length} questions`);
+        } catch (error) {
+          showError('Error parsing JSON: ' + error.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function showError(message) {
+      const errorDisplay = document.getElementById('errorDisplay');
+      errorDisplay.textContent = message;
+      errorDisplay.style.display = 'block';
+      setTimeout(() => {
+        errorDisplay.style.display = 'none';
+      }, 5000);
+    }
+
+    function showSuccess(message) {
+      const successDisplay = document.getElementById('successDisplay');
+      successDisplay.textContent = message;
+      successDisplay.style.display = 'block';
+      setTimeout(() => {
+        successDisplay.style.display = 'none';
+      }, 3000);
+    }
+
+    // Initialize
+    document.getElementById('questionType').dispatchEvent(new Event('change'));
+  </script>
+</body>
+</html>

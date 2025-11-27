@@ -1,0 +1,108 @@
+[
+  {
+    "type": "multiple-choice",
+    "question": "What is the chemical symbol for water?",
+    "options": ["H2O", "O2", "CO2", "HO"],
+    "answer": 0,
+    "explanation": "Water is H2O - two hydrogen atoms bonded to one oxygen atom."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the powerhouse of the cell?",
+    "options": ["Nucleus", "Mitochondria", "Ribosome", "Chloroplast"],
+    "answer": 1,
+    "explanation": "Mitochondria generate most of the cell's energy (ATP) through cellular respiration."
+  },
+  {
+    "type": "truefalse",
+    "question": "Sound travels faster in water than in air.",
+    "options": ["True", "False"],
+    "answer": 0,
+    "explanation": "True. Sound travels about 4 times faster in water than in air because water molecules are closer together."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What gas do plants absorb from the atmosphere?",
+    "options": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+    "answer": 2,
+    "explanation": "Plants absorb carbon dioxide (CO2) during photosynthesis and release oxygen."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the center of an atom called?",
+    "options": ["Electron", "Neutron", "Proton", "Nucleus"],
+    "answer": 3,
+    "explanation": "The nucleus is at the center of an atom, containing protons and neutrons."
+  },
+  {
+    "type": "flashcard",
+    "question": "What are the three states of matter?",
+    "answer": "Solid, Liquid, Gas",
+    "explanation": "Matter exists in three main states: solid (fixed shape), liquid (fixed volume), and gas (no fixed shape or volume)."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What force pulls objects toward Earth?",
+    "options": ["Magnetism", "Friction", "Gravity", "Inertia"],
+    "answer": 2,
+    "explanation": "Gravity is the force that attracts objects with mass toward each other, pulling objects toward Earth's center."
+  },
+  {
+    "type": "truefalse",
+    "question": "The human body has 206 bones.",
+    "options": ["True", "False"],
+    "answer": 0,
+    "explanation": "True. An adult human skeleton has 206 bones (babies are born with about 270, which fuse as they grow)."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is photosynthesis?",
+    "options": [
+      "Plants absorbing water",
+      "Plants making food using sunlight",
+      "Plants releasing oxygen at night",
+      "Plants growing taller"
+    ],
+    "answer": 1,
+    "explanation": "Photosynthesis is the process where plants use sunlight, water, and CO2 to make glucose (food) and oxygen."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the speed of light?",
+    "options": ["300,000 km/s", "150,000 km/s", "500,000 km/s", "1,000,000 km/s"],
+    "answer": 0,
+    "explanation": "Light travels at approximately 300,000 kilometers per second (or 299,792,458 m/s exactly)."
+  },
+  {
+    "type": "flashcard",
+    "question": "What is the pH of a neutral substance?",
+    "answer": "7",
+    "explanation": "The pH scale goes from 0-14. pH 7 is neutral (like pure water). Below 7 is acidic, above 7 is alkaline/basic."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What type of energy is stored in food?",
+    "options": ["Kinetic energy", "Chemical energy", "Thermal energy", "Light energy"],
+    "answer": 1,
+    "explanation": "Food stores chemical energy in the bonds between atoms, which is released during digestion."
+  },
+  {
+    "type": "truefalse",
+    "question": "Humans use less than 10% of their brain.",
+    "options": ["True", "False"],
+    "answer": 1,
+    "explanation": "False. This is a myth. Humans use virtually all parts of their brain, and most of the brain is active almost all the time."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the largest organ in the human body?",
+    "options": ["Heart", "Liver", "Brain", "Skin"],
+    "answer": 3,
+    "explanation": "The skin is the largest organ, covering the entire body and protecting it from the environment."
+  },
+  {
+    "type": "open",
+    "question": "Explain why ice floats on water.",
+    "explanation": "Ice floats because it is less dense than liquid water. When water freezes, molecules form a crystalline structure with more space between them, making ice lighter per unit volume."
+  }
+]

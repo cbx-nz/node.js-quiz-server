@@ -1,0 +1,7 @@
+node_modules/
+.env
+.todo
+inappropriate-words.json
+promopt.md
+earth-science-year9-10.json
+english-nz-year9-10.json

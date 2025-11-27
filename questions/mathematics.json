@@ -1,0 +1,103 @@
+[
+  {
+    "type": "multiple-choice",
+    "question": "What is 15% of 200?",
+    "options": ["20", "25", "30", "35"],
+    "answer": 2,
+    "explanation": "15% of 200 = 0.15 × 200 = 30"
+  },
+  {
+    "type": "multiple-choice",
+    "question": "Solve for x: 2x + 5 = 15",
+    "options": ["3", "4", "5", "10"],
+    "answer": 2,
+    "explanation": "2x + 5 = 15; 2x = 10; x = 5"
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the area of a rectangle with length 8cm and width 5cm?",
+    "options": ["13 cm²", "26 cm²", "40 cm²", "80 cm²"],
+    "answer": 2,
+    "explanation": "Area = length × width = 8 × 5 = 40 cm²"
+  },
+  {
+    "type": "truefalse",
+    "question": "A prime number is only divisible by 1 and itself.",
+    "options": ["True", "False"],
+    "answer": 0,
+    "explanation": "True. Prime numbers have exactly two factors: 1 and the number itself."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the square root of 144?",
+    "options": ["10", "11", "12", "14"],
+    "answer": 2,
+    "explanation": "√144 = 12 because 12 × 12 = 144"
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is 3/4 as a decimal?",
+    "options": ["0.25", "0.5", "0.75", "0.34"],
+    "answer": 2,
+    "explanation": "3/4 = 3 ÷ 4 = 0.75"
+  },
+  {
+    "type": "flashcard",
+    "question": "What is the formula for the area of a circle?",
+    "answer": "πr² or A = πr²",
+    "explanation": "The area of a circle equals pi (π) multiplied by the radius squared (r²)."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "If a triangle has angles of 60°, 60°, and 60°, what type of triangle is it?",
+    "options": ["Scalene", "Isosceles", "Equilateral", "Right-angled"],
+    "answer": 2,
+    "explanation": "An equilateral triangle has all three angles equal (60°) and all three sides equal."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is -5 + 8?",
+    "options": ["-13", "-3", "3", "13"],
+    "answer": 2,
+    "explanation": "-5 + 8 = 3. Adding a positive number to a negative number: subtract and keep the sign of the larger number."
+  },
+  {
+    "type": "truefalse",
+    "question": "The sum of angles in any triangle is 180°.",
+    "options": ["True", "False"],
+    "answer": 0,
+    "explanation": "True. The interior angles of any triangle always add up to exactly 180 degrees."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is 7² (7 squared)?",
+    "options": ["14", "21", "49", "77"],
+    "answer": 2,
+    "explanation": "7² = 7 × 7 = 49"
+  },
+  {
+    "type": "flashcard",
+    "question": "What is Pythagoras' Theorem?",
+    "answer": "a² + b² = c²",
+    "explanation": "In a right-angled triangle, the square of the hypotenuse (c) equals the sum of squares of the other two sides (a and b)."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the perimeter of a square with side length 6cm?",
+    "options": ["12cm", "18cm", "24cm", "36cm"],
+    "answer": 2,
+    "explanation": "Perimeter of a square = 4 × side length = 4 × 6 = 24cm"
+  },
+  {
+    "type": "multiple-choice",
+    "question": "Simplify: 3(x + 2) = ?",
+    "options": ["3x + 2", "3x + 5", "3x + 6", "x + 6"],
+    "answer": 2,
+    "explanation": "Using distributive property: 3(x + 2) = 3x + 6"
+  },
+  {
+    "type": "open",
+    "question": "If you have $50 and spend $12.75 on lunch and $8.50 on transport, how much do you have left? Show your working.",
+    "explanation": "Total spent = $12.75 + $8.50 = $21.25. Money left = $50 - $21.25 = $28.75"
+  }
+]

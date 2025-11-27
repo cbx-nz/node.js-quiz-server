@@ -1,0 +1,117 @@
+[
+  {
+    "type": "multiple-choice",
+    "question": "In what year did World War I begin?",
+    "options": ["1912", "1914", "1916", "1918"],
+    "answer": 1,
+    "explanation": "World War I began in 1914 and ended in 1918."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "Who was the first person to walk on the moon?",
+    "options": ["Buzz Aldrin", "Neil Armstrong", "Yuri Gagarin", "John Glenn"],
+    "answer": 1,
+    "explanation": "Neil Armstrong was the first human to walk on the moon on July 20, 1969, as part of the Apollo 11 mission."
+  },
+  {
+    "type": "flashcard",
+    "question": "When did New Zealand become a dominion (self-governing)?",
+    "answer": "1907",
+    "explanation": "New Zealand became a self-governing dominion within the British Empire on September 26, 1907."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What was the Treaty of Waitangi?",
+    "options": [
+      "A trade agreement with Australia",
+      "An agreement between Māori and the British Crown",
+      "New Zealand's declaration of independence",
+      "A peace treaty ending a war"
+    ],
+    "answer": 1,
+    "explanation": "The Treaty of Waitangi, signed in 1840, was an agreement between Māori chiefs and the British Crown, founding document of New Zealand."
+  },
+  {
+    "type": "truefalse",
+    "question": "The Berlin Wall fell in 1989.",
+    "options": ["True", "False"],
+    "answer": 0,
+    "explanation": "True. The Berlin Wall, which divided East and West Berlin, fell on November 9, 1989."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "Who was the first Prime Minister of New Zealand?",
+    "options": ["Richard Seddon", "Henry Sewell", "Michael Joseph Savage", "Julius Vogel"],
+    "answer": 1,
+    "explanation": "Henry Sewell was New Zealand's first Premier (Prime Minister) in 1856, though his term lasted only 13 days."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What ancient civilization built the pyramids?",
+    "options": ["Romans", "Greeks", "Egyptians", "Mayans"],
+    "answer": 2,
+    "explanation": "The ancient Egyptians built the pyramids, including the famous pyramids at Giza around 2560 BC."
+  },
+  {
+    "type": "truefalse",
+    "question": "New Zealand women gained the right to vote in 1893.",
+    "options": ["True", "False"],
+    "answer": 0,
+    "explanation": "True. New Zealand was the first self-governing country in the world to grant women the right to vote in 1893."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What was the name of the ship Charles Darwin sailed on?",
+    "options": ["HMS Victory", "HMS Beagle", "HMS Endeavour", "Mayflower"],
+    "answer": 1,
+    "explanation": "Charles Darwin sailed on HMS Beagle from 1831-1836, which led to his theory of evolution."
+  },
+  {
+    "type": "flashcard",
+    "question": "What year did the Māori land wars begin in New Zealand?",
+    "answer": "1845",
+    "explanation": "The New Zealand Wars (Māori land wars) began in 1845 and continued intermittently until 1872."
+  },
+  {
+    "type": "decision",
+    "question": "As a historian researching World War II, you find conflicting accounts. What's your best approach?",
+    "options": [
+      "Use only the most recent source",
+      "Compare multiple primary and secondary sources",
+      "Choose the most dramatic version",
+      "Ignore the differences"
+    ],
+    "explanation": "Good historians cross-reference multiple sources, especially primary sources, to build an accurate understanding of historical events."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "Who wrote 'The Diary of a Young Girl' about hiding from Nazis?",
+    "options": ["Winston Churchill", "Anne Frank", "Helen Keller", "Rosa Parks"],
+    "answer": 1,
+    "explanation": "Anne Frank wrote her famous diary while hiding from Nazi persecution in Amsterdam during World War II."
+  },
+  {
+    "type": "truefalse",
+    "question": "The Roman Empire fell in 476 AD.",
+    "options": ["True", "False"],
+    "answer": 0,
+    "explanation": "True. The Western Roman Empire fell in 476 AD when the last emperor was deposed, though the Eastern Roman (Byzantine) Empire continued."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What was the main cause of World War I?",
+    "options": [
+      "The assassination of Archduke Franz Ferdinand",
+      "The sinking of the Titanic",
+      "Economic depression",
+      "Religious conflicts"
+    ],
+    "answer": 0,
+    "explanation": "The assassination of Archduke Franz Ferdinand of Austria in 1914 triggered the outbreak of World War I, though underlying tensions existed."
+  },
+  {
+    "type": "open",
+    "question": "Why is the Treaty of Waitangi significant to New Zealand today?",
+    "explanation": "The Treaty of Waitangi remains New Zealand's founding document and continues to influence laws, policies, and relationships between Māori and the Crown."
+  }
+]

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation - Quiz Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #f5576c;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 3em;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1.2em;
+    }
+
+    .nav-menu {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-menu a {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+
+    .nav-menu a:hover {
+      transform: translateY(-2px);
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      color: #f5576c;
+      border-bottom: 3px solid #f5576c;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+
+    h3 {
+      color: #667eea;
+      margin-top: 25px;
+      margin-bottom: 15px;
+      font-size: 1.5em;
+    }
+
+    p {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    ul, ol {
+      margin-left: 30px;
+      margin-bottom: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #d63384;
+    }
+
+    pre {
+      background: #f4f4f4;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: #333;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .feature-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 4px solid #667eea;
+    }
+
+    .feature-card h4 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .warning {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .info {
+      background: #d1ecf1;
+      border-left: 4px solid #0c5460;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .success {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #667eea;
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.2s;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .emoji {
+      font-size: 1.2em;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Quiz Game Documentation</h1>
+    <p class="subtitle">Complete Guide for Hosts, Players, and Question Creators</p>
+
+    <div class="nav-menu">
+      <a href="/">🎮 Play Game</a>
+      <a href="/host.html">🎛️ Host Dashboard</a>
+      <a href="/creator.html">📝 Question Creator</a>
+      <a href="https://github.com" target="_blank">📚 GitHub</a>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="section">
+      <h2>🚀 Quick Start</h2>
+      
+      <div class="success">
+        <strong>Ready to play in 3 steps:</strong>
+        <ol style="margin-top: 10px; margin-left: 20px;">
+          <li>Host creates a room at <code>/host.html</code></li>
+          <li>Players join at <code>/</code> using the room code</li>
+          <li>Host starts the game and controls questions</li>
+        </ol>
+      </div>
+
+      <h3>For Hosts</h3>
+      <ol>
+        <li>Navigate to <code>/host.html</code></li>
+        <li>Select a subject from the dropdown (General, English, Math, Science, or History)</li>
+        <li>Click "Create New Game Room" to generate a 6-character code</li>
+        <li>Share the code with your players</li>
+        <li>Click "🖥️ Open Presenter View" to display questions on a big screen</li>
+        <li>Wait for players to join, then click "▶️ Start Game"</li>
+        <li>Use "➡️ Next Question" to progress through the quiz</li>
+      </ol>
+
+      <h3>For Players</h3>
+      <ol>
+        <li>Go to <code>/</code> (the main page)</li>
+        <li>Enter the 6-character room code from your host</li>
+        <li>Enter your name (keep it appropriate!)</li>
+        <li>Click "Join Game" and wait for the host to start</li>
+        <li>Answer questions as fast as possible for maximum points!</li>
+      </ol>
+    </div>
+
+    <!-- Features -->
+    <div class="section">
+      <h2>✨ Key Features</h2>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>⚡ Time-Based Scoring</h4>
+          <p>First player to answer correctly gets <strong>1000 points</strong>, second gets <strong>900 points</strong>, and so on. Speed matters!</p>
+        </div>
+
+        <div class="feature-card">
+          <h4>📚 Multiple Subjects</h4>
+          <p>Choose from 5 pre-loaded subjects including NZ Year 9-10 English curriculum content, or create your own!</p>
+        </div>
+
+        <div class="feature-card">
+          <h4>🖥️ Presenter Mode</h4>
+          <p>Full-screen Kahoot-style display shows questions to the audience. Answers hidden until revealed!</p>
+        </div>
+
+        <div class="feature-card">
+          <h4>🚫 Username Filter</h4>
+          <p>Automatically blocks 50+ inappropriate words to keep the game appropriate for all ages.</p>
+        </div>
+
+        <div class="feature-card">
+          <h4>👥 Mid-Game Joining</h4>
+          <p>Players can join even after the game has started, making it flexible for classroom use.</p>
+        </div>
+
+        <div class="feature-card">
+          <h4>❌ Kick Players</h4>
+          <p>Hosts can remove players with inappropriate usernames or disruptive behavior instantly.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scoring System -->
+    <div class="section">
+      <h2>🏆 Scoring System</h2>
+      
+      <p>The game uses a position-based scoring system to reward both accuracy and speed:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Points Awarded</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1st Place</td>
+            <td>1000</td>
+            <td>First correct answer</td>
+          </tr>
+          <tr>
+            <td>2nd Place</td>
+            <td>900</td>
+            <td>Second correct answer</td>
+          </tr>
+          <tr>
+            <td>3rd Place</td>
+            <td>800</td>
+            <td>Third correct answer</td>
+          </tr>
+          <tr>
+            <td>4th Place</td>
+            <td>700</td>
+            <td>Fourth correct answer</td>
+          </tr>
+          <tr>
+            <td>5th+</td>
+            <td>600-100</td>
+            <td>Decreases by 100, minimum 100</td>
+          </tr>
+          <tr>
+            <td>Incorrect</td>
+            <td>0</td>
+            <td>Wrong answer</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info">
+        <strong>💡 Pro Tip:</strong> The timer starts when the question is sent, so read quickly and answer confidently!
+      </div>
+    </div>
+
+    <!-- Host Controls -->
+    <div class="section">
+      <h2>🎛️ Host Controls</h2>
+
+      <h3>Game Management</h3>
+      <ul>
+        <li><strong>▶️ Start Game:</strong> Begin the quiz session (requires at least 1 player)</li>
+        <li><strong>➡️ Next Question:</strong> Load and display the next question</li>
+        <li><strong>⏹️ End Game:</strong> Finish the game and show final scores</li>
+        <li><strong>👁️ Reveal Answer:</strong> Manually show the correct answer to all players</li>
+      </ul>
+
+      <h3>Player Management</h3>
+      <ul>
+        <li><strong>View Player List:</strong> See all connected players and their current scores</li>
+        <li><strong>❌ Kick Player:</strong> Remove a player from the game (click the red button next to their name)</li>
+        <li><strong>Live Statistics:</strong> See how many players have answered each question</li>
+      </ul>
+
+      <h3>Communication</h3>
+      <ul>
+        <li><strong>📢 Broadcast Message:</strong> Send an announcement that appears as a banner for all players</li>
+        <li><strong>🖥️ Presenter View:</strong> Opens a full-screen window to display on a projector or TV</li>
+      </ul>
+
+      <div class="warning">
+        <strong>⚠️ Important:</strong> Once you click "End Game", you cannot load more questions. Start a new room for a fresh game.
+      </div>
+    </div>
+
+    <!-- Question Types -->
+    <div class="section">
+      <h2>❓ Question Types</h2>
+
+      <h3>1. Multiple Choice</h3>
+      <p>Players select from 2+ options. Server validates the answer and awards points based on position.</p>
+      <pre><code>{
+  "type": "multiple-choice",
+  "question": "What is the capital of France?",
+  "options": ["London", "Paris", "Berlin", "Madrid"],
+  "answer": 1,
+  "explanation": "Paris has been France's capital since 987 AD."
+}</code></pre>
+
+      <h3>2. True/False</h3>
+      <p>A simplified multiple choice with only two options.</p>
+      <pre><code>{
+  "type": "truefalse",
+  "question": "The Earth is flat.",
+  "options": ["True", "False"],
+  "answer": 1,
+  "explanation": "The Earth is approximately spherical."
+}</code></pre>
+
+      <h3>3. Decision</h3>
+      <p>No correct answer. Used for polls or opinion questions.</p>
+      <pre><code>{
+  "type": "decision",
+  "question": "Which is your favorite fruit?",
+  "options": ["Apple", "Banana", "Orange", "Grape"]
+}</code></pre>
+
+      <h3>4. Flashcard</h3>
+      <p>Shows the answer after submission. Great for learning and memorization.</p>
+      <pre><code>{
+  "type": "flashcard",
+  "question": "What does HTML stand for?",
+  "answer": "HyperText Markup Language",
+  "explanation": "HTML is the standard markup language for web pages."
+}</code></pre>
+
+      <h3>5. Open-ended</h3>
+      <p>Players type a text response. No automatic validation.</p>
+      <pre><code>{
+  "type": "open",
+  "question": "Describe your favorite book in one sentence.",
+  "answer": "User response"
+}</code></pre>
+    </div>
+
+    <!-- Creating Questions -->
+    <div class="section">
+      <h2>📝 Creating Custom Questions</h2>
+
+      <h3>Using the Question Creator</h3>
+      <ol>
+        <li>Navigate to <code>/creator.html</code></li>
+        <li>Select the question type from the dropdown</li>
+        <li>Enter your question text</li>
+        <li>Add options (for multiple choice/true-false)</li>
+        <li>Specify the correct answer (use 0-based index for multiple choice)</li>
+        <li>Add an optional explanation</li>
+        <li>Click "➕ Add Question"</li>
+        <li>Repeat for all questions</li>
+        <li>Click "💾 Download JSON" to save your question set</li>
+      </ol>
+
+      <h3>Adding to the Game</h3>
+      <ol>
+        <li>Save your downloaded JSON file to the <code>questions/</code> folder</li>
+        <li>Open <code>server.js</code></li>
+        <li>Add your file to the <code>questionFiles</code> object:</li>
+      </ol>
+      <pre><code>const questionFiles = {
+  'general': 'general-knowledge.json',
+  'your-subject': 'your-questions.json',  // Add this line
+  'english': 'english-nz-year9-10.json',
+  // ... other subjects
+};</code></pre>
+      <li>Restart the server</li>
+      <li>Your subject will now appear in the host's subject dropdown!</li>
+
+      <div class="info">
+        <strong>💡 Tip:</strong> Use the "📁 Load JSON" button to edit existing question files. Make your changes, then download again!
+      </div>
+    </div>
+
+    <!-- Safety Features -->
+    <div class="section">
+      <h2>🔒 Safety & Moderation</h2>
+
+      <h3>Inappropriate Username Filtering</h3>
+      <p>The game automatically blocks usernames containing inappropriate content. The filter list includes 50+ words and is stored in <code>inappropriate-words.json</code>.</p>
+
+      <p>To customize the filter:</p>
+      <ol>
+        <li>Open <code>inappropriate-words.json</code></li>
+        <li>Add or remove words from the array</li>
+        <li>Save and restart the server</li>
+      </ol>
+
+      <div class="warning">
+        <strong>Note:</strong> The filter is case-insensitive and checks if the word is contained anywhere in the username. We don't handle the Scunthorpe problem to keep filtering simple and effective.
+      </div>
+
+      <h3>Host Kick Controls</h3>
+      <p>If a player manages to join with an inappropriate name or is being disruptive:</p>
+      <ol>
+        <li>Find the player in the "Connected Players" list on the host dashboard</li>
+        <li>Click the red ❌ button next to their name</li>
+        <li>Confirm the removal</li>
+        <li>The player is immediately disconnected and removed from the game</li>
+      </ol>
+    </div>
+
+    <!-- Technical Details -->
+    <div class="section">
+      <h2>⚙️ Technical Details</h2>
+
+      <h3>Technologies Used</h3>
+      <ul>
+        <li><strong>Backend:</strong> Node.js with Express.js</li>
+        <li><strong>Real-time:</strong> Socket.io for bidirectional communication</li>
+        <li><strong>Frontend:</strong> Vanilla JavaScript, HTML5, CSS3</li>
+        <li><strong>Environment:</strong> dotenv for configuration</li>
+      </ul>
+
+      <h3>Socket.io Events</h3>
+      <p>The game uses Socket.io events for all real-time communication:</p>
+
+      <h4>Player Events</h4>
+      <ul>
+        <li><code>player-join-room</code> - Join a game room</li>
+        <li><code>player-submit-answer</code> - Submit an answer</li>
+        <li><code>room-joined</code> - Confirmation of successful join</li>
+        <li><code>answer-submitted</code> - Answer receipt acknowledgment</li>
+        <li><code>answer-result</code> - Individual answer feedback</li>
+        <li><code>kicked</code> - Notification of being removed</li>
+      </ul>
+
+      <h4>Host Events</h4>
+      <ul>
+        <li><code>host-create-room</code> - Create a new game room</li>
+        <li><code>host-set-subject</code> - Select question subject</li>
+        <li><code>host-start-game</code> - Begin the game</li>
+        <li><code>host-kick-player</code> - Remove a player</li>
+        <li><code>host-next-question</code> - Load next question</li>
+        <li><code>host-reveal-answer</code> - Show correct answer</li>
+        <li><code>host-end-game</code> - End the game session</li>
+      </ul>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="section">
+      <h2>🐛 Troubleshooting</h2>
+
+      <h3>Players Can't Join</h3>
+      <ul>
+        <li>Verify the room code is exactly 6 characters</li>
+        <li>Check that the server is running (<code>npm start</code>)</li>
+        <li>Ensure players are using the correct URL</li>
+        <li>Check if username is being blocked by filter</li>
+      </ul>
+
+      <h3>Questions Not Loading</h3>
+      <ul>
+        <li>Verify JSON files are in the <code>questions/</code> folder</li>
+        <li>Check JSON syntax with a validator</li>
+        <li>Look at server console for error messages</li>
+        <li>Ensure subject is added to <code>questionFiles</code> in server.js</li>
+      </ul>
+
+      <h3>Presenter View Not Working</h3>
+      <ul>
+        <li>Allow pop-ups in your browser</li>
+        <li>Try manually opening <code>/presenter.html?room=ROOMCODE</code></li>
+        <li>Check that the room code parameter is correct</li>
+      </ul>
+
+      <h3>Port Already in Use</h3>
+      <p>Change the port in your <code>.env</code> file:</p>
+      <pre><code>PORT=3001</code></pre>
+
+      <div class="info">
+        <strong>Still having issues?</strong> Check the browser console (F12) and server terminal for error messages.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="section" style="text-align: center; padding-top: 40px; border-top: 2px solid #ddd;">
+      <h2 style="border: none;">🎓 Educational License</h2>
+      <p>This quiz game is free to use for educational purposes. Perfect for classrooms, study groups, and learning sessions!</p>
+      <p style="color: #666; margin-top: 20px;">Made with ❤️ for educators and students</p>
+      <div style="margin-top: 30px;">
+        <a href="/" class="btn">🎮 Start Playing</a>
+        <a href="/host.html" class="btn">🎛️ Host a Game</a>
+        <a href="/creator.html" class="btn">📝 Create Questions</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

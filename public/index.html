@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Game - Player</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #667eea;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      background: #f0f4ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .question-header {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .question-number {
+      color: #667eea;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .question-text {
+      font-size: 20px;
+      color: #333;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .question-type-badge {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .options {
+      margin-bottom: 20px;
+    }
+
+    .option {
+      background: #f8f9fa;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .option:hover {
+      background: #e9ecef;
+      border-color: #667eea;
+    }
+
+    .option.selected {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .option.correct {
+      background: #28a745;
+      color: white;
+      border-color: #28a745;
+    }
+
+    .option.incorrect {
+      background: #dc3545;
+      color: white;
+      border-color: #dc3545;
+    }
+
+    .text-input {
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .result {
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .result.correct {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .result.incorrect {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .result.neutral {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .explanation {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      color: #856404;
+    }
+
+    .stats {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .stats-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .stats-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .message {
+      background: #667eea;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Popup Banner for Broadcasts */
+    .broadcast-banner {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      font-size: 18px;
+      font-weight: 600;
+      z-index: 10000;
+      min-width: 300px;
+      max-width: 500px;
+      text-align: center;
+      transition: top 0.5s ease-in-out;
+    }
+
+    .broadcast-banner.show {
+      top: 20px;
+    }
+
+    /* Waiting for results animation */
+    .waiting-results {
+      text-align: center;
+      padding: 30px;
+      font-size: 20px;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .waiting-results .spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .score {
+      font-size: 24px;
+      color: #667eea;
+      text-align: center;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    .waiting {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      padding: 40px 0;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 Quiz Game</h1>
+
+    <!-- Join Screen -->
+    <div id="joinScreen" class="screen active">
+      <div class="form-group">
+        <label for="roomCode">Room Code</label>
+        <input type="text" id="roomCode" placeholder="Enter 6-character code" maxlength="6">
+      </div>
+      <div class="form-group">
+        <label for="playerName">Your Name</label>
+        <input type="text" id="playerName" placeholder="Enter your name">
+      </div>
+      <button id="joinButton">Join Game</button>
+      <div id="joinError" class="error" style="display: none; margin-top: 20px;"></div>
+    </div>
+
+    <!-- Waiting Screen -->
+    <div id="waitingScreen" class="screen">
+      <div class="status">Connected to Room: <span id="currentRoom"></span></div>
+      <div class="status">Welcome, <span id="currentPlayer"></span>!</div>
+      <div class="waiting">
+        <p>⏳ Waiting for host to start the game...</p>
+      </div>
+      <div id="waitingMessage"></div>
+    </div>
+
+    <!-- Question Screen -->
+    <div id="questionScreen" class="screen">
+      <div class="status">Room: <span id="roomDisplay"></span> | <span id="playerDisplay"></span></div>
+      <div class="score">Score: <span id="scoreDisplay">0</span></div>
+      
+      <div class="question-header">
+        <div class="question-number" id="questionNumber"></div>
+        <div class="question-type-badge" id="questionType"></div>
+        <div class="question-text" id="questionText"></div>
+      </div>
+
+      <!-- Multiple Choice / Decision / True-False Options -->
+      <div id="optionsContainer" class="options" style="display: none;"></div>
+
+      <!-- Open-ended Text Input -->
+      <div id="textInputContainer" class="text-input" style="display: none;">
+        <textarea id="textAnswer" placeholder="Type your answer here..."></textarea>
+      </div>
+
+      <!-- Flashcard Answer Display -->
+      <div id="flashcardAnswer" style="display: none;"></div>
+
+      <button id="submitButton">Submit Answer</button>
+      <button id="nextButton" style="display: none; background: #28a745;">Ready for Next Question</button>
+
+      <!-- Result Display -->
+      <div id="resultDisplay" style="display: none;"></div>
+
+      <!-- Statistics -->
+      <div id="statsDisplay" style="display: none;" class="stats"></div>
+    </div>
+
+    <!-- End Screen -->
+    <div id="endScreen" class="screen">
+      <div class="status">Game Over!</div>
+      <div id="endMessage" class="result neutral"></div>
+      <div class="score">Your Final Score: <span id="finalScore">0</span></div>
+      <button onclick="location.reload()">Play Again</button>
+    </div>
+  </div>
+
+  <!-- Broadcast Banner Popup -->
+  <div id="broadcastBanner" class="broadcast-banner"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>

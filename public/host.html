@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Game - Host Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #f5576c;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .room-code {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(245, 87, 108, 0.3);
+    }
+
+    .room-code h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+
+    .room-code .code {
+      font-size: 48px;
+      font-weight: bold;
+      letter-spacing: 8px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 15px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-create {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 20px;
+      padding: 20px;
+    }
+
+    .btn-start {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-next {
+      background: #007bff;
+      color: white;
+    }
+
+    .btn-end {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-broadcast {
+      background: #ffc107;
+      color: #333;
+    }
+
+    .btn-presenter {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .section h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 20px;
+      border-bottom: 2px solid #f5576c;
+      padding-bottom: 10px;
+    }
+
+    .players-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px;
+    }
+
+    .player-card {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #f5576c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .player-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .player-score {
+      background: #f5576c;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .status {
+      background: #d1ecf1;
+      color: #0c5460;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .question-display {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #007bff;
+    }
+
+    .question-type {
+      display: inline-block;
+      background: #007bff;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .question-text {
+      font-size: 18px;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .answers-list {
+      margin-top: 15px;
+    }
+
+    .answer-item {
+      background: #e9ecef;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .answer-item.correct {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+    }
+
+    .answer-item.incorrect {
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
+    }
+
+    .broadcast-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .broadcast-form input {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .broadcast-form input:focus {
+      outline: none;
+      border-color: #ffc107;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #999;
+      padding: 40px;
+      font-style: italic;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #f5576c;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Host Dashboard</h1>
+
+    <!-- Create Room Screen -->
+    <div id="createScreen" class="screen active">
+      <div class="empty-state">
+        <p style="font-size: 24px; margin-bottom: 20px;">Welcome, Host!</p>
+        <p style="margin-bottom: 30px;">Create a new game room for your players</p>
+      </div>
+      
+      <div class="section">
+        <h3>📚 Select Subject</h3>
+        <select id="subjectSelect" style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 20px;">
+          <option value="">Loading subjects...</option>
+        </select>
+        <div id="subjectInfo" style="text-align: center; color: #666; margin-bottom: 20px;"></div>
+      </div>
+      
+      <button class="btn-create" id="createRoomButton">Create New Game Room</button>
+    </div>
+
+    <!-- Host Control Screen -->
+    <div id="controlScreen" class="screen">
+      <!-- Room Code Display -->
+      <div class="room-code">
+        <h2>🔑 Room Code</h2>
+        <div class="code" id="roomCodeDisplay">------</div>
+        <p style="margin-top: 10px; opacity: 0.9;">Share this code with players</p>
+      </div>
+
+      <!-- Game Status -->
+      <div id="gameStatus" class="status">Waiting to start game...</div>
+
+      <!-- Control Buttons -->
+      <div class="controls">
+        <button class="btn-start" id="startButton">▶️ Start Game</button>
+        <button class="btn-next" id="nextButton" disabled>➡️ Next Question</button>
+        <button class="btn-end" id="endButton" disabled>⏹️ End Game</button>
+        <button class="btn-presenter" id="presenterButton">🖥️ Open Presenter View</button>
+        <button class="btn-next" id="revealButton" disabled style="background: #17a2b8;">👁️ Reveal Answer</button>
+      </div>
+
+      <!-- Broadcast Message -->
+      <div class="section">
+        <h3>📢 Broadcast Message</h3>
+        <div class="broadcast-form">
+          <input type="text" id="broadcastInput" placeholder="Type a message to all players...">
+          <button class="btn-broadcast" id="broadcastButton">Send</button>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="section">
+        <h3>📊 Game Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="totalPlayers">0</div>
+            <div class="stat-label">Players</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="currentQuestion">0</div>
+            <div class="stat-label">Current Question</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="answeredCount">0</div>
+            <div class="stat-label">Answered</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Question -->
+      <div class="section" id="currentQuestionSection" style="display: none;">
+        <h3>❓ Current Question</h3>
+        <div class="question-display" id="questionDisplay">
+          <span class="question-type" id="questionTypeDisplay"></span>
+          <div class="question-text" id="questionTextDisplay"></div>
+          <div class="answers-list" id="answersListDisplay"></div>
+        </div>
+      </div>
+
+      <!-- Connected Players -->
+      <div class="section">
+        <h3>👥 Connected Players (<span id="playerCount">0</span>)</h3>
+        <div class="players-list" id="playersList">
+          <div class="empty-state">No players connected yet</div>
+        </div>
+      </div>
+
+      <!-- Error Display -->
+      <div id="errorDisplay" class="error" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="host.js"></script>
+</body>
+</html>

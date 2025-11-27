@@ -1,0 +1,114 @@
+[
+  {
+    "type": "multiple-choice",
+    "question": "What is the capital of France?",
+    "options": ["London", "Paris", "Berlin", "Madrid"],
+    "answer": 1,
+    "explanation": "Paris is the capital and largest city of France."
+  },
+  {
+    "type": "truefalse",
+    "question": "The Earth is flat.",
+    "options": ["True", "False"],
+    "answer": 1,
+    "explanation": "The Earth is an oblate spheroid, not flat."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is 12 × 12?",
+    "options": ["120", "124", "144", "156"],
+    "answer": 2,
+    "explanation": "12 multiplied by 12 equals 144."
+  },
+  {
+    "type": "decision",
+    "question": "You find a wallet on the street with $100 inside. What do you do?",
+    "options": [
+      "Take the money and leave the wallet",
+      "Turn it in to the police",
+      "Look for ID and try to contact the owner",
+      "Leave it where you found it"
+    ],
+    "explanation": "This is a personal decision question. There's no single 'correct' answer, but it reveals your values."
+  },
+  {
+    "type": "flashcard",
+    "question": "What is the chemical symbol for Gold?",
+    "answer": "Au",
+    "explanation": "Au comes from the Latin word 'aurum' meaning gold."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "Who wrote 'Romeo and Juliet'?",
+    "options": ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+    "answer": 1,
+    "explanation": "William Shakespeare wrote this famous tragedy around 1594-1596."
+  },
+  {
+    "type": "truefalse",
+    "question": "A tomato is a vegetable.",
+    "options": ["True", "False"],
+    "answer": 1,
+    "explanation": "Botanically, tomatoes are fruits (specifically berries), though they're often used as vegetables in cooking."
+  },
+  {
+    "type": "decision",
+    "question": "Your team is behind in a project deadline. What's your approach?",
+    "options": [
+      "Work overtime to catch up",
+      "Ask for a deadline extension",
+      "Cut features to meet the deadline",
+      "Bring in additional help"
+    ],
+    "explanation": "Different situations call for different strategies. Consider team health, stakeholder expectations, and project priorities."
+  },
+  {
+    "type": "flashcard",
+    "question": "What year did World War II end?",
+    "answer": "1945",
+    "explanation": "World War II ended in 1945 with Germany's surrender in May and Japan's surrender in September."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the largest planet in our solar system?",
+    "options": ["Saturn", "Neptune", "Jupiter", "Uranus"],
+    "answer": 2,
+    "explanation": "Jupiter is the largest planet, with a mass more than twice that of all other planets combined."
+  },
+  {
+    "type": "open",
+    "question": "What is your favorite programming language and why?",
+    "explanation": "Open-ended question to share your thoughts and preferences."
+  },
+  {
+    "type": "truefalse",
+    "question": "Python is a compiled language.",
+    "options": ["True", "False"],
+    "answer": 1,
+    "explanation": "Python is an interpreted language, though it does compile to bytecode before execution."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "In which year was the first iPhone released?",
+    "options": ["2005", "2006", "2007", "2008"],
+    "answer": 2,
+    "explanation": "The first iPhone was released by Apple on June 29, 2007."
+  },
+  {
+    "type": "decision",
+    "question": "You're offered a higher-paying job, but it requires relocating. Your family is settled here. What do you prioritize?",
+    "options": [
+      "Take the job - career advancement is important",
+      "Decline - family stability comes first",
+      "Negotiate remote work options",
+      "Discuss with family and decide together"
+    ],
+    "explanation": "Life decisions involve weighing multiple factors. Each choice reflects different priorities."
+  },
+  {
+    "type": "flashcard",
+    "question": "What does HTTP stand for?",
+    "answer": "HyperText Transfer Protocol",
+    "explanation": "HTTP is the foundation of data communication on the World Wide Web."
+  }
+]
