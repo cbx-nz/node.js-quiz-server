@@ -2,5 +2,6 @@
   "general": "general-knowledge.json",
   "mathematics": "mathematics.json",
   "science": "science.json",
-  "history": "history.json"
+  "history": "history.json",
+  "developer test questions": "questions.json"
 }

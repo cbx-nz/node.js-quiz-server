@@ -1,6 +1,6 @@
 /**
  * Global Navigation Modal
- * Triggers when user types '.?'
+ * Triggers when user types './'
  * Shows all available pages in the app
  */
 
@@ -72,7 +72,7 @@
           color: #666;
           margin-bottom: 25px;
           font-size: 14px;
-        ">Type <strong>.?</strong> anywhere to open this menu</p>
+        ">Type <strong>./</strong> anywhere to open this menu</p>
         <div id="navModalPages"></div>
       </div>
     </div>
@@ -148,8 +148,8 @@
         clearTimeout(keyTimeout);
       }
       
-      // Check for .?
-      if (keyBuffer.endsWith('.?')) {
+      // Check for ./
+      if (keyBuffer.endsWith('./')) {
         modal.style.display = 'flex';
         keyBuffer = '';
         e.preventDefault();
