@@ -1,0 +1,68 @@
+<!-- 
+This is a placeholder HTML file that generates simple sound effects using Web Audio API.
+You can replace these with actual MP3 files for better quality sounds.
+
+To use this as a reference for creating sounds:
+1. Open this file in a browser
+2. Click the buttons to test sounds
+3. Replace with real MP3 files in the sounds/ folder
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sound Generator</title>
+</head>
+<body>
+  <h1>Quiz Sound Effects</h1>
+  <button onclick="playNotification()">Test Notification Sound</button>
+  <button onclick="playAllAnswered()">Test All Answered Sound</button>
+  
+  <script>
+    // Simple notification beep
+    function playNotification() {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.3);
+    }
+    
+    // Success chime
+    function playAllAnswered() {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      function playTone(freq, startTime, duration) {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = freq;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.2, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + duration);
+      }
+      
+      const now = audioContext.currentTime;
+      playTone(523, now, 0.2);        // C
+      playTone(659, now + 0.15, 0.2);  // E
+      playTone(784, now + 0.3, 0.4);   // G
+    }
+  </script>
+</body>
+</html>

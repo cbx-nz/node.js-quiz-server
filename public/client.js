@@ -1,6 +1,43 @@
 // Initialize Socket.io connection
 const socket = io();
 
+// UUID Management
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function getUserUUID() {
+  let uuid = localStorage.getItem('cbx_user_uuid');
+  if (!uuid) {
+    uuid = generateUUID();
+    localStorage.setItem('cbx_user_uuid', uuid);
+  }
+  return uuid;
+}
+
+// Check if UUID is banned
+function checkUUIDBan() {
+  const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+  const userUUID = getUserUUID();
+  
+  if (bannedUUIDs.includes(userUUID)) {
+    // Redirect to game ban page
+    window.location.href = '/game-banned.html';
+    return true;
+  }
+  return false;
+}
+
+// Check on page load
+if (checkUUIDBan()) {
+  // Stop script execution if banned
+  throw new Error('User is banned');
+}
+
 // DOM Elements
 const joinScreen = document.getElementById('joinScreen');
 const waitingScreen = document.getElementById('waitingScreen');
@@ -34,6 +71,8 @@ const broadcastBanner = document.getElementById('broadcastBanner');
 
 const endMessage = document.getElementById('endMessage');
 const finalScore = document.getElementById('finalScore');
+const clapButton = document.getElementById('clapButton');
+const totalClaps = document.getElementById('totalClaps');
 
 // State
 let playerName = '';
@@ -41,6 +80,22 @@ let roomCode = '';
 let currentScore = 0;
 let selectedAnswer = null;
 let currentQuestionData = null;
+
+// Track tab focus and answer state
+let isTabFocused = true;
+let hasAnsweredCurrentQuestion = false;
+let questionTimerId = null;
+let questionIntervalId = null;
+let notificationCount = 0;
+
+// Tab focus detection
+window.addEventListener('focus', () => {
+  isTabFocused = true;
+});
+
+window.addEventListener('blur', () => {
+  isTabFocused = false;
+});
 
 /**
  * Show a specific screen and hide others
@@ -88,8 +143,9 @@ joinButton.addEventListener('click', () => {
   playerName = name;
   roomCode = code;
 
-  // Emit join room event
-  socket.emit('player-join-room', { roomCode: code, playerName: name });
+  // Emit join room event with UUID
+  const userUUID = getUserUUID();
+  socket.emit('player-join-room', { roomCode: code, playerName: name, userUUID: userUUID });
 });
 
 /**
@@ -101,6 +157,12 @@ socket.on('room-joined', (data) => {
   roomDisplay.textContent = data.roomCode;
   playerDisplay.textContent = data.playerName;
   
+  // Initialize score from server (important for reconnections)
+  if (data.score !== undefined) {
+    currentScore = data.score;
+    scoreDisplay.textContent = currentScore;
+  }
+  
   showScreen(waitingScreen);
 });
 
@@ -108,6 +170,10 @@ socket.on('room-joined', (data) => {
  * Handle game started
  */
 socket.on('game-started', () => {
+  // Reset score for new game
+  currentScore = 0;
+  scoreDisplay.textContent = currentScore;
+  
   showScreen(questionScreen);
   // Clear any previous question state
   resultDisplay.style.display = 'none';
@@ -121,6 +187,46 @@ socket.on('game-started', () => {
 socket.on('new-question', (data) => {
   currentQuestionData = data.question;
   selectedAnswer = null;
+  hasAnsweredCurrentQuestion = false;
+  notificationCount = 0;
+
+  // Clear any previous timers/intervals
+  if (questionTimerId) {
+    clearTimeout(questionTimerId);
+    questionTimerId = null;
+  }
+  if (questionIntervalId) {
+    clearInterval(questionIntervalId);
+    questionIntervalId = null;
+  }
+
+  // Set initial timer to beep after 3 seconds if not answered
+  questionTimerId = setTimeout(() => {
+    if (!hasAnsweredCurrentQuestion && !isTabFocused) {
+      // Play first beep
+      playSound('notification.mp3');
+      notificationCount++;
+      
+      // Play second beep after 3 seconds
+      setTimeout(() => {
+        if (!hasAnsweredCurrentQuestion && !isTabFocused) {
+          playSound('notification.mp3');
+          notificationCount++;
+          
+          // After two beeps, continue with one beep every 3 seconds
+          questionIntervalId = setInterval(() => {
+            if (!hasAnsweredCurrentQuestion && !isTabFocused) {
+              playSound('notification.mp3');
+            } else if (hasAnsweredCurrentQuestion) {
+              // Stop interval if answered
+              clearInterval(questionIntervalId);
+              questionIntervalId = null;
+            }
+          }, 3000);
+        }
+      }, 3000);
+    }
+  }, 3000);
 
   // Reset UI
   resultDisplay.style.display = 'none';
@@ -144,6 +250,9 @@ socket.on('new-question', (data) => {
     case 'decision':
     case 'truefalse':
       renderOptions(data.question.options);
+      break;
+    case 'multi-choice':
+      renderMultiChoice(data.question.options);
       break;
     case 'flashcard':
       renderFlashcard();
@@ -216,6 +325,13 @@ submitButton.addEventListener('click', () => {
     case 'truefalse':
       if (selectedAnswer === null) {
         alert('Please select an option');
+        return;
+      }
+      answer = selectedAnswer;
+      break;
+    case 'multi-choice':
+      if (!Array.isArray(selectedAnswer) || selectedAnswer.length === 0) {
+        alert('Please select at least one option');
         return;
       }
       answer = selectedAnswer;
@@ -300,6 +416,19 @@ socket.on('answer-result', (data) => {
  * Handle answer submitted acknowledgment
  */
 socket.on('answer-submitted', (data) => {
+  // Mark that player has answered
+  hasAnsweredCurrentQuestion = true;
+  
+  // Clear the timers/intervals since they answered
+  if (questionTimerId) {
+    clearTimeout(questionTimerId);
+    questionTimerId = null;
+  }
+  if (questionIntervalId) {
+    clearInterval(questionIntervalId);
+    questionIntervalId = null;
+  }
+  
   // Just show that answer was received, don't reveal correctness yet
   resultDisplay.style.display = 'block';
   resultDisplay.className = 'waiting-results';
@@ -343,11 +472,29 @@ socket.on('host-message', (data) => {
 });
 
 /**
+ * Play sound effect
+ */
+function playSound(soundFile) {
+  try {
+    const audio = new Audio(`/sounds/${soundFile}`);
+    audio.volume = 0.5;
+    audio.play().catch(err => console.log('Sound play failed:', err));
+  } catch (error) {
+    console.log('Sound error:', error);
+  }
+}
+
+/**
  * Show broadcast banner popup
  */
 function showBroadcastBanner(message) {
   broadcastBanner.textContent = message;
   broadcastBanner.classList.add('show');
+  
+  // Play notification sound only if tab is not focused
+  if (!isTabFocused) {
+    playSound('notification.mp3');
+  }
   
   // Hide after 5 seconds
   setTimeout(() => {
@@ -361,7 +508,35 @@ function showBroadcastBanner(message) {
 socket.on('game-ended', (data) => {
   endMessage.textContent = data.message;
   finalScore.textContent = currentScore;
+  totalClaps.textContent = '0'; // Reset clap count
   showScreen(endScreen);
+});
+
+/**
+ * Handle clap count update
+ */
+socket.on('clap-update', (data) => {
+  totalClaps.textContent = data.totalClaps;
+});
+
+/**
+ * Clap button click handler
+ */
+clapButton.addEventListener('click', () => {
+  socket.emit('player-clap', { roomCode });
+  // Add animation
+  clapButton.style.transform = 'scale(1.2)';
+  setTimeout(() => {
+    clapButton.style.transform = 'scale(1)';
+  }, 100);
+});
+
+/**
+ * Handle room closed by host
+ */
+socket.on('room-closed', (data) => {
+  alert(data.message);
+  location.reload();
 });
 
 /**
@@ -380,6 +555,65 @@ socket.on('error', (data) => {
 });
 
 /**
+ * Handle UUID ban
+ */
+socket.on('uuid-banned', (data) => {
+  // Store banned UUID in localStorage
+  const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+  if (!bannedUUIDs.includes(data.uuid)) {
+    bannedUUIDs.push(data.uuid);
+    localStorage.setItem('cbx_banned_uuids', JSON.stringify(bannedUUIDs));
+  }
+  
+  // Store ban info
+  localStorage.setItem('cbx_uuid_ban_info', JSON.stringify({
+    message: data.message,
+    reason: data.reason,
+    playerName: data.playerName,
+    bannedAt: data.bannedAt,
+    unbanDate: data.unbanDate,
+    uuid: data.uuid,
+    timestamp: Date.now()
+  }));
+  
+  // Redirect to ban page
+  window.location.href = '/game-banned.html';
+});
+
+/**
+ * Handle broadcast UUID ban check (when admin bans someone mid-game)
+ */
+socket.on('check-uuid-ban', (data) => {
+  const userUUID = getUserUUID();
+  
+  // Check if this ban applies to current user
+  if (userUUID === data.uuid) {
+    console.log('UUID banned by admin, redirecting...');
+    
+    // Store banned UUID in localStorage
+    const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+    if (!bannedUUIDs.includes(data.uuid)) {
+      bannedUUIDs.push(data.uuid);
+      localStorage.setItem('cbx_banned_uuids', JSON.stringify(bannedUUIDs));
+    }
+    
+    // Store ban info
+    localStorage.setItem('cbx_uuid_ban_info', JSON.stringify({
+      message: 'You have been banned by an administrator',
+      reason: data.reason,
+      playerName: data.playerName,
+      bannedAt: data.bannedAt,
+      unbanDate: data.unbanDate,
+      uuid: data.uuid,
+      timestamp: Date.now()
+    }));
+    
+    // Redirect to ban page
+    window.location.href = '/game-banned.html';
+  }
+});
+
+/**
  * Handle being kicked by host
  */
 socket.on('kicked', (data) => {
@@ -394,6 +628,15 @@ socket.on('player-list-updated', (data) => {
   console.log('Players updated:', data.players);
 });
 
+/**
+ * Handle player disconnect/tab close
+ */
+window.addEventListener('beforeunload', () => {
+  if (roomCode && playerName) {
+    socket.emit('player-disconnect', { roomCode, playerName });
+  }
+});
+
 // Enable Enter key to join
 roomCodeInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
@@ -406,3 +649,51 @@ playerNameInput.addEventListener('keypress', (e) => {
     joinButton.click();
   }
 });
+
+/**
+ * Periodic ban check - check every 5 seconds if user has been banned mid-game
+ */
+function checkBanStatusPeriodically() {
+  const userUUID = getUserUUID();
+  
+  // First check localStorage for any existing ban info
+  const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+  if (bannedUUIDs.includes(userUUID)) {
+    console.log('UUID found in banned list, redirecting...');
+    window.location.href = '/game-banned.html';
+    return;
+  }
+  
+  // Then check with server API
+  fetch(`/api/check-ban?uuid=${encodeURIComponent(userUUID)}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.banned) {
+        // Store ban info in localStorage
+        if (data.type === 'uuid') {
+          const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+          if (!bannedUUIDs.includes(data.uuid)) {
+            bannedUUIDs.push(data.uuid);
+            localStorage.setItem('cbx_banned_uuids', JSON.stringify(bannedUUIDs));
+          }
+          localStorage.setItem('cbx_uuid_ban_info', JSON.stringify({
+            reason: data.reason,
+            timestamp: data.timestamp
+          }));
+        }
+        
+        // Redirect to appropriate ban page
+        if (data.type === 'uuid') {
+          window.location.href = '/game-banned.html';
+        } else {
+          window.location.href = '/ip-banned.html';
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Ban check failed:', error);
+    });
+}
+
+// Check every 5 seconds
+setInterval(checkBanStatusPeriodically, 5000);

@@ -14,7 +14,9 @@
     { name: 'Host Dashboard', url: '/host.html', description: 'Create and manage games' },
     { name: 'Presenter View', url: '/presenter.html', description: 'Full-screen display for audience' },
     { name: 'Question Creator', url: '/creator.html', description: 'Create custom questions' },
-    { name: 'Documentation', url: '/docs.html', description: 'Complete guide and help' }
+    { name: 'Documentation', url: '/docs.html', description: 'Complete guide and help' },
+    { name: 'Privacy Policy', url: '/privacy.html', description: 'How we handle your data' },
+    { name: 'Terms of Service', url: '/tos.html', description: 'Rules and guidelines' }
   ];
 
   // Create modal HTML

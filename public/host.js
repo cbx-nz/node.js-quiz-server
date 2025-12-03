@@ -1,3 +1,22 @@
+// Check if UUID is banned before allowing access
+function checkUUIDBan() {
+  const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+  const userUUID = localStorage.getItem('cbx_user_uuid') || '';
+  
+  if (bannedUUIDs.includes(userUUID)) {
+    // Redirect to game ban page
+    window.location.href = '/game-banned.html';
+    return true;
+  }
+  return false;
+}
+
+// Check on page load
+if (checkUUIDBan()) {
+  // Stop script execution if banned
+  throw new Error('User is banned');
+}
+
 // Initialize Socket.io connection
 const socket = io();
 
@@ -7,6 +26,9 @@ const controlScreen = document.getElementById('controlScreen');
 const createRoomButton = document.getElementById('createRoomButton');
 const subjectSelect = document.getElementById('subjectSelect');
 const subjectInfo = document.getElementById('subjectInfo');
+const uploadJsonButton = document.getElementById('uploadJsonButton');
+const customJsonUpload = document.getElementById('customJsonUpload');
+const uploadStatus = document.getElementById('uploadStatus');
 
 const roomCodeDisplay = document.getElementById('roomCodeDisplay');
 const gameStatus = document.getElementById('gameStatus');
@@ -14,7 +36,10 @@ const gameStatus = document.getElementById('gameStatus');
 const startButton = document.getElementById('startButton');
 const nextButton = document.getElementById('nextButton');
 const endButton = document.getElementById('endButton');
+const endRoomButton = document.getElementById('endRoomButton');
 const broadcastButton = document.getElementById('broadcastButton');
+const broadcastPresenterButton = document.getElementById('broadcastPresenterButton');
+const broadcastSelectedButton = document.getElementById('broadcastSelectedButton');
 const broadcastInput = document.getElementById('broadcastInput');
 const presenterButton = document.getElementById('presenterButton');
 const revealButton = document.getElementById('revealButton');
@@ -32,6 +57,13 @@ const playersList = document.getElementById('playersList');
 const playerCount = document.getElementById('playerCount');
 const errorDisplay = document.getElementById('errorDisplay');
 
+// Change Questions Elements
+const changeQuestionsSection = document.getElementById('changeQuestionsSection');
+const newSubjectSelect = document.getElementById('newSubjectSelect');
+const newUploadJsonButton = document.getElementById('newUploadJsonButton');
+const newCustomJsonUpload = document.getElementById('newCustomJsonUpload');
+const newUploadStatus = document.getElementById('newUploadStatus');
+
 // State
 let roomCode = '';
 let players = [];
@@ -39,6 +71,54 @@ let gameStarted = false;
 let questionIndex = 0;
 let currentAnswers = [];
 let selectedSubject = 'general';
+let customQuestions = null;
+
+/**
+ * Periodic ban check - check every 5 seconds if host has been banned mid-game
+ */
+function checkBanStatusPeriodically() {
+  // Get UUID from localStorage (host pages may not have UUID generation, but check anyway)
+  const userUUID = localStorage.getItem('cbx_user_uuid') || '';
+  
+  fetch(`/api/check-ban?uuid=${encodeURIComponent(userUUID)}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.banned) {
+        // Store ban info in localStorage
+        if (data.type === 'uuid') {
+          const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+          if (!bannedUUIDs.includes(data.uuid)) {
+            bannedUUIDs.push(data.uuid);
+            localStorage.setItem('cbx_banned_uuids', JSON.stringify(bannedUUIDs));
+          }
+          localStorage.setItem('cbx_uuid_ban_info', JSON.stringify({
+            reason: data.reason,
+            timestamp: data.timestamp
+          }));
+        } else if (data.type === 'ip') {
+          localStorage.setItem('cbx_quiz_ban_info', JSON.stringify({
+            banned: true,
+            reason: data.reason,
+            timestamp: data.timestamp,
+            unbanDate: data.unbanDate
+          }));
+        }
+        
+        // Redirect to appropriate ban page
+        if (data.type === 'uuid') {
+          window.location.href = '/game-banned.html';
+        } else {
+          window.location.href = '/ip-banned.html';
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Ban check failed:', error);
+    });
+}
+
+// Check every 5 seconds
+setInterval(checkBanStatusPeriodically, 5000);
 
 /**
  * Load available subjects from server
@@ -81,10 +161,157 @@ function updateSubjectInfo() {
 // Load subjects when page loads
 loadSubjects();
 
+/**
+ * Load subjects into the new question selector
+ */
+async function loadNewSubjects() {
+  try {
+    const response = await fetch('/api/subjects');
+    const subjects = await response.json();
+    
+    newSubjectSelect.innerHTML = '';
+    subjects.forEach(subject => {
+      const option = document.createElement('option');
+      option.value = subject.id;
+      option.textContent = `${subject.name} (${subject.questionCount} questions)`;
+      if (subject.id === selectedSubject) {
+        option.selected = true;
+      }
+      newSubjectSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error loading subjects:', error);
+    newSubjectSelect.innerHTML = '<option value="general">General Knowledge</option>';
+  }
+}
+
+/**
+ * Handle new subject selection for next game
+ */
+newSubjectSelect.addEventListener('change', () => {
+  selectedSubject = newSubjectSelect.value;
+  customQuestions = null; // Clear custom questions
+  newUploadStatus.textContent = '';
+  socket.emit('host-set-subject', { roomCode, subject: selectedSubject });
+  gameStatus.textContent = `Questions changed to ${newSubjectSelect.options[newSubjectSelect.selectedIndex].textContent}. Start when ready!`;
+});
+
+/**
+ * Handle new custom JSON upload for next game
+ */
+newUploadJsonButton.addEventListener('click', () => {
+  newCustomJsonUpload.click();
+});
+
+newCustomJsonUpload.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const questions = JSON.parse(text);
+
+    // Validate with server
+    const response = await fetch('/api/validate-questions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ questions })
+    });
+
+    const result = await response.json();
+    
+    if (result.valid) {
+      customQuestions = result.questions;
+      selectedSubject = 'custom';
+      socket.emit('host-set-custom-questions', { roomCode, questions: customQuestions });
+      newUploadStatus.textContent = `✅ Loaded ${customQuestions.length} questions successfully!`;
+      newUploadStatus.style.color = 'green';
+      gameStatus.textContent = `Custom questions loaded (${customQuestions.length} questions). Start when ready!`;
+    } else {
+      throw new Error(result.error);
+    }
+  } catch (error) {
+    newUploadStatus.textContent = `❌ Error: ${error.message}`;
+    newUploadStatus.style.color = 'red';
+  }
+  
+  newCustomJsonUpload.value = '';
+});
+
 // Update subject info when selection changes
 subjectSelect.addEventListener('change', () => {
   selectedSubject = subjectSelect.value;
   updateSubjectInfo();
+  // Clear custom questions if switching back to subject selection
+  if (customQuestions) {
+    customQuestions = null;
+    uploadStatus.textContent = '';
+    uploadStatus.className = 'upload-status';
+  }
+});
+
+/**
+ * Handle custom JSON file upload
+ */
+uploadJsonButton.addEventListener('click', () => {
+  customJsonUpload.click();
+});
+
+customJsonUpload.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  uploadStatus.textContent = '⏳ Validating...';
+  uploadStatus.className = 'upload-status info';
+
+  try {
+    // Read file
+    const text = await file.text();
+    let questions;
+    
+    try {
+      questions = JSON.parse(text);
+    } catch (parseError) {
+      throw new Error('Invalid JSON format. Please check your file.');
+    }
+
+    // Send to server for validation
+    const response = await fetch('/api/validate-questions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(questions)
+    });
+
+    const result = await response.json();
+
+    if (!result.valid) {
+      throw new Error(result.error || 'Validation failed');
+    }
+
+    // Store validated questions
+    customQuestions = result.questions;
+    uploadStatus.textContent = `✅ ${result.questionCount} questions loaded from ${file.name}`;
+    uploadStatus.className = 'upload-status success';
+
+    // Show warnings if any
+    if (result.warnings && result.warnings.length > 0) {
+      console.warn('Validation warnings:', result.warnings);
+    }
+
+    // Disable subject selection when custom questions are loaded
+    subjectSelect.disabled = true;
+
+  } catch (error) {
+    uploadStatus.textContent = `❌ ${error.message}`;
+    uploadStatus.className = 'upload-status error';
+    customQuestions = null;
+    subjectSelect.disabled = false;
+  }
+
+  // Clear file input
+  e.target.value = '';
 });
 
 /**
@@ -124,10 +351,16 @@ function updatePlayersList() {
     const playerCard = document.createElement('div');
     playerCard.className = 'player-card';
     playerCard.innerHTML = `
-      <span class="player-name">${player.name}</span>
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <span class="player-score">${player.score} pts</span>
-        <button class="btn-kick" data-socket-id="${player.socketId}" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;">❌ Kick</button>
+      <div class="player-card-content">
+        <input type="checkbox" class="player-checkbox" data-socket-id="${player.socketId}">
+        <div class="player-info">
+          <span class="player-name">${player.name}</span>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="player-score">${player.score} pts</span>
+            <button class="btn-kick" data-socket-id="${player.socketId}" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;">❌ Kick</button>
+            <button class="btn-request-ban" data-socket-id="${player.socketId}" data-player-name="${player.name}" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;">🚫 Request Ban</button>
+          </div>
+        </div>
       </div>
     `;
     playersList.appendChild(playerCard);
@@ -141,6 +374,28 @@ function updatePlayersList() {
       if (player && confirm(`Remove ${player.name} from the game?`)) {
         socket.emit('host-kick-player', { roomCode, socketId });
       }
+    });
+  });
+  
+  // Add event listeners to request ban buttons
+  document.querySelectorAll('.btn-request-ban').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const socketId = e.target.dataset.socketId;
+      const playerName = e.target.dataset.playerName;
+      const reason = prompt(`Why do you want to ban ${playerName}?\n\nProvide a detailed reason:`);
+      
+      if (reason && reason.trim().length > 0) {
+        socket.emit('host-request-ban', { roomCode, socketId, playerName, reason: reason.trim() });
+        alert(`Ban request submitted for ${playerName}`);
+      }
+    });
+  });
+
+  // Add event listeners to checkboxes to enable/disable "Send to Selected" button
+  document.querySelectorAll('.player-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      const checkedBoxes = document.querySelectorAll('.player-checkbox:checked');
+      broadcastSelectedButton.disabled = checkedBoxes.length === 0;
     });
   });
 }
@@ -211,8 +466,13 @@ socket.on('room-created', (data) => {
   roomCode = data.roomCode;
   roomCodeDisplay.textContent = roomCode;
   
-  // Set the subject for this room
-  socket.emit('host-set-subject', { roomCode, subject: selectedSubject });
+  // If custom questions are loaded, send them to the server
+  if (customQuestions) {
+    socket.emit('host-set-custom-questions', { roomCode, questions: customQuestions });
+  } else {
+    // Otherwise, set the subject for this room
+    socket.emit('host-set-subject', { roomCode, subject: selectedSubject });
+  }
   
   showScreen(controlScreen);
   gameStatus.textContent = 'Room created! Waiting for players...';
@@ -249,6 +509,8 @@ startButton.addEventListener('click', () => {
   nextButton.disabled = false;
   endButton.disabled = false;
   revealButton.disabled = false;
+  changeQuestionsSection.style.display = 'none'; // Hide change questions when game starts
+  endRoomButton.style.display = 'none'; // Hide end room button when game starts
 });
 
 /**
@@ -281,13 +543,16 @@ revealButton.addEventListener('click', () => {
  * End the game
  */
 endButton.addEventListener('click', () => {
-  if (confirm('Are you sure you want to end the game?')) {
+  if (confirm('End the current game? Players will remain in the room and you can start a new game.')) {
     socket.emit('host-end-game', { roomCode });
-    gameStatus.textContent = 'Game ended!';
+    gameStatus.textContent = 'Game ended! You can change questions and start a new game.';
     startButton.disabled = false;
     nextButton.disabled = true;
     endButton.disabled = true;
     revealButton.disabled = true;
+    endRoomButton.style.display = 'inline-block'; // Show End Room button
+    changeQuestionsSection.style.display = 'block'; // Show change questions section
+    loadNewSubjects(); // Load subjects into the new selector
     gameStarted = false;
     questionIndex = 0;
     currentQuestion.textContent = '0';
@@ -296,7 +561,29 @@ endButton.addEventListener('click', () => {
 });
 
 /**
- * Broadcast message
+ * Handle End Room button click
+ */
+endRoomButton.addEventListener('click', () => {
+  if (confirm('Are you sure you want to END THE ROOM? This will disconnect all players and close the room permanently.')) {
+    socket.emit('host-end-room', { roomCode });
+    // Redirect back to create screen
+    createScreen.classList.add('active');
+    controlScreen.classList.remove('active');
+    gameStatus.textContent = 'Waiting for players...';
+    startButton.disabled = true;
+    nextButton.disabled = true;
+    endButton.disabled = true;
+    revealButton.disabled = true;
+    endRoomButton.style.display = 'none';
+    gameStarted = false;
+    questionIndex = 0;
+    players = [];
+    updatePlayersList();
+  }
+});
+
+/**
+ * Broadcast message to all players
  */
 broadcastButton.addEventListener('click', () => {
   const message = broadcastInput.value.trim();
@@ -309,7 +596,68 @@ broadcastButton.addEventListener('click', () => {
   broadcastInput.value = '';
   
   // Show confirmation
-  gameStatus.textContent = `Broadcast sent: "${message}"`;
+  gameStatus.textContent = `Broadcast sent to all players: "${message}"`;
+  setTimeout(() => {
+    if (gameStarted) {
+      gameStatus.textContent = `Question ${questionIndex} active - waiting for answers...`;
+    } else {
+      gameStatus.textContent = 'Waiting to start game...';
+    }
+  }, 3000);
+});
+
+/**
+ * Broadcast message to presenter
+ */
+broadcastPresenterButton.addEventListener('click', () => {
+  const message = broadcastInput.value.trim();
+  if (!message) {
+    showError('Please enter a message');
+    return;
+  }
+
+  socket.emit('host-broadcast-presenter', { roomCode, message });
+  broadcastInput.value = '';
+  
+  // Show confirmation
+  gameStatus.textContent = `Broadcast sent to presenter: "${message}"`;
+  setTimeout(() => {
+    if (gameStarted) {
+      gameStatus.textContent = `Question ${questionIndex} active - waiting for answers...`;
+    } else {
+      gameStatus.textContent = 'Waiting to start game...';
+    }
+  }, 3000);
+});
+
+/**
+ * Broadcast message to selected players
+ */
+broadcastSelectedButton.addEventListener('click', () => {
+  const message = broadcastInput.value.trim();
+  if (!message) {
+    showError('Please enter a message');
+    return;
+  }
+
+  // Get all checked player socket IDs
+  const checkedBoxes = document.querySelectorAll('.player-checkbox:checked');
+  const playerIds = Array.from(checkedBoxes).map(cb => cb.dataset.socketId);
+
+  if (playerIds.length === 0) {
+    showError('Please select at least one player');
+    return;
+  }
+
+  socket.emit('host-broadcast-targeted', { roomCode, message, playerIds });
+  broadcastInput.value = '';
+  
+  // Uncheck all boxes
+  checkedBoxes.forEach(cb => cb.checked = false);
+  broadcastSelectedButton.disabled = true;
+  
+  // Show confirmation
+  gameStatus.textContent = `Broadcast sent to ${playerIds.length} selected player(s): "${message}"`;
   setTimeout(() => {
     if (gameStarted) {
       gameStatus.textContent = `Question ${questionIndex} active - waiting for answers...`;
@@ -361,15 +709,33 @@ socket.on('player-answered', (data) => {
 });
 
 /**
+ * Play sound effect
+ */
+function playSound(soundFile) {
+  try {
+    const audio = new Audio(`/sounds/${soundFile}`);
+    audio.volume = 0.5;
+    audio.play().catch(err => console.log('Sound play failed:', err));
+  } catch (error) {
+    console.log('Sound error:', error);
+  }
+}
+
+/**
  * Handle answer statistics
  */
 socket.on('answer-stats', (data) => {
+  const previousAnswered = answeredCount.textContent;
   answeredCount.textContent = data.answered;
   currentAnswers = data.answers;
   updateAnswersDisplay();
   
   if (data.answered === players.length && players.length > 0) {
     gameStatus.textContent = `All players answered! Click "Next Question" to continue.`;
+    // Play sound only when transitioning from not-all to all answered
+    if (previousAnswered !== data.answered.toString()) {
+      playSound('all-answered.mp3');
+    }
   }
 });
 

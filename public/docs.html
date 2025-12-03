@@ -265,11 +265,11 @@
       <h3>For Hosts</h3>
       <ol>
         <li>Navigate to <code>/host.html</code></li>
-        <li>Select a subject from the dropdown (General, English, Math, Science, or History)</li>
+        <li>Select a subject from the dropdown (8 subjects available including Formal Essay Writing for NCEA Level 1)</li>
         <li>Click "Create New Game Room" to generate a 6-character code</li>
         <li>Share the code with your players</li>
-        <li>Click "🖥️ Open Presenter View" to display questions on a big screen</li>
-        <li>Wait for players to join, then click "▶️ Start Game"</li>
+        <li>Click "🖥️ Open Presenter View" to display questions on a big screen (scrollable for 16+ players!)</li>
+        <li>Wait for players to join, then click "▶️ Start Game" (first question loads immediately!)</li>
         <li>Use "➡️ Next Question" to progress through the quiz</li>
       </ol>
 
@@ -295,12 +295,12 @@
 
         <div class="feature-card">
           <h4>📚 Multiple Subjects</h4>
-          <p>Choose from 5 pre-loaded subjects, or create your own!</p>
+          <p>Choose from 8 pre-loaded subjects including NCEA Level 1 Formal Essay Writing, or create your own!</p>
         </div>
 
         <div class="feature-card">
           <h4>🖥️ Presenter Mode</h4>
-          <p>Full-screen Kahoot-style display shows questions to the audience. Room code and subject stay visible during the game so latecomers can join anytime!</p>
+          <p>Full-screen Kahoot-style display shows questions to the audience. Room code and subject stay visible during the game. Now fully scrollable and supports 16+ players!</p>
         </div>
 
         <div class="feature-card">
@@ -389,24 +389,40 @@
 
       <h3>Game Management</h3>
       <ul>
-        <li><strong>▶️ Start Game:</strong> Begin the quiz session (requires at least 1 player)</li>
+        <li><strong>▶️ Start Game:</strong> Begin the quiz session and immediately load the first question (requires at least 1 player)</li>
         <li><strong>➡️ Next Question:</strong> Load and display the next question</li>
         <li><strong>⏹️ End Game:</strong> Finish the game and show final scores</li>
         <li><strong>👁️ Reveal Answer:</strong> Manually show the correct answer to all players</li>
       </ul>
 
+      <div class="tip">
+        <strong>💡 New!</strong> Clicking "Start Game" now immediately shows the first question - no need to click "Next Question" anymore!
+      </div>
+
       <h3>Player Management</h3>
       <ul>
         <li><strong>View Player List:</strong> See all connected players and their current scores</li>
         <li><strong>❌ Kick Player:</strong> Remove a player from the game (click the red button next to their name)</li>
+        <li><strong>🚫 Request Ban:</strong> Submit a ban request for problematic players (requires admin approval)</li>
         <li><strong>Live Statistics:</strong> See how many players have answered each question</li>
+        <li><strong>🎵 Sound Alert:</strong> Hear completion sound when all players have answered</li>
       </ul>
 
       <h3>Communication</h3>
       <ul>
-        <li><strong>📢 Broadcast Message:</strong> Send an announcement that appears as a banner for all players</li>
+        <li><strong>📢 Broadcast Messages:</strong> Send announcements to different audiences:
+          <ul style="margin-top: 10px;">
+            <li><strong>Send to All Players:</strong> Message appears as a banner for all connected players (with sound notification)</li>
+            <li><strong>Send to Presenter:</strong> Message displays on the presenter view only (useful for notes/instructions)</li>
+            <li><strong>Send to Selected:</strong> Select specific players using checkboxes, then send targeted messages</li>
+          </ul>
+        </li>
         <li><strong>🖥️ Presenter View:</strong> Opens a full-screen window to display on a projector or TV</li>
       </ul>
+
+      <div class="tip">
+        <strong>💡 Tip:</strong> The "Send to Selected" button is disabled until you check at least one player. After sending, all checkboxes are automatically cleared.
+      </div>
 
       <div class="warning">
         <strong>⚠️ Important:</strong> Once you click "End Game", you cannot load more questions. Start a new room for a fresh game.
@@ -461,6 +477,19 @@
   "question": "Describe your favorite book in one sentence.",
   "answer": "User response"
 }</code></pre>
+
+      <h3>6. Multi-Choice (Select All That Apply)</h3>
+      <p>Players must select ALL correct answers to receive points. Uses checkboxes instead of radio buttons.</p>
+      <pre><code>{
+  "type": "multi-choice",
+  "question": "Which of these are programming languages?",
+  "options": ["Python", "HTML", "JavaScript", "CSS"],
+  "answer": [0, 2],
+  "explanation": "Python and JavaScript are programming languages. HTML and CSS are markup/styling."
+}</code></pre>
+      <div class="info">
+        <strong>💡 Note:</strong> For multi-choice questions, the answer is an <strong>array of indices</strong>, not a single number. Players must select all correct options to get points.
+      </div>
     </div>
 
     <!-- Creating Questions -->
@@ -493,7 +522,8 @@
   "mathematics": "mathematics.json",
   "science": "science.json",
   "history": "history.json",
-  "earth-science": "earth-science-year9-10.json"
+  "earth-science": "earth-science-year9-10.json",
+  "formal-essay": "formal-essay.json"
 }</code></pre>
       </ol>
       <ol start="4">
@@ -536,6 +566,151 @@
         <li>Confirm the removal</li>
         <li>The player is immediately disconnected and removed from the game</li>
       </ol>
+
+      <h3>Ban System (Admin Panel + Host Requests)</h3>
+      <p>The system supports both IP-based and UUID-based bans for comprehensive moderation:</p>
+      
+      <div class="info">
+        <strong>⚠️ Security:</strong> The admin panel runs on port 3001 and should be protected with firewall rules. Only allow access from trusted IPs.
+      </div>
+
+      <h4>IP-Based Bans (Network-Wide):</h4>
+      <ul>
+        <li><strong>Server-Side:</strong> IP addresses stored in <code>banned-ips.json</code> with reason and timestamp</li>
+        <li><strong>Client-Side:</strong> Ban status stored in browser localStorage to prevent reconnection</li>
+        <li><strong>Network Effect:</strong> Bans affect entire networks (e.g., all students on school Wi-Fi)</li>
+        <li><strong>Persistence:</strong> Banned users cannot reconnect even after closing browser (localStorage)</li>
+        <li><strong>Temporary or Permanent:</strong> Choose duration (1 hour to 30 days, or permanent)</li>
+        <li><strong>Auto-Expiration:</strong> Expired bans automatically removed on server start and runtime checks</li>
+      </ul>
+
+      <h4>UUID-Based Bans (User-Specific):</h4>
+      <ul>
+        <li><strong>UUID Generation:</strong> Each player receives unique identifier stored in browser localStorage</li>
+        <li><strong>Persistent Tracking:</strong> UUIDs remain across sessions, name changes, and different rooms</li>
+        <li><strong>Host Requests:</strong> Game hosts can request UUID bans for problematic players (🚫 button)</li>
+        <li><strong>Admin Approval:</strong> All ban requests must be approved by server administrator</li>
+        <li><strong>Ban Storage:</strong> Approved UUIDs stored in <code>banned-uuids.json</code></li>
+        <li><strong>Request Archive:</strong> All decisions (approved/rejected) saved in <code>requests-backup.json</code></li>
+        <li><strong>Individual Targeting:</strong> UUID bans affect specific user regardless of network</li>
+      </ul>
+
+      <h4>Ban Request Workflow:</h4>
+      <ol>
+        <li>Host identifies problematic player during game</li>
+        <li>Host clicks "🚫 Request Ban" button next to player name</li>
+        <li>Host provides detailed reason for ban request</li>
+        <li>Request sent to admin panel with player UUID, name, reason, room code, and timestamp</li>
+        <li>Admin reviews request in admin panel under "🚨 Ban Requests from Hosts"</li>
+        <li>Admin approves (adds UUID to ban list) or rejects (dismisses request)</li>
+        <li>Request archived to <code>requests-backup.json</code> with action taken and timestamp</li>
+        <li>Banned UUID automatically blocked on next connection attempt</li>
+      </ol>
+
+      <h4>Admin Panel Features:</h4>
+      <ul>
+        <li>Add IP bans with reason documentation and duration</li>
+        <li>View all banned IPs with timestamps and expiration dates</li>
+        <li>View pending ban requests from game hosts</li>
+        <li>Approve or reject ban requests with one click</li>
+        <li>View all banned UUIDs with player names and reasons</li>
+        <li>Unban UUIDs or IPs manually</li>
+        <li>Export/import ban lists for backup</li>
+        <li>Auto-detect current IP address</li>
+        <li>View live server statistics</li>
+      </ul>
+
+      <h4>Ban Enforcement:</h4>
+      <ol>
+        <li>User connects with IP and UUID</li>
+        <li>Server checks <code>banned-ips.json</code> and <code>banned-uuids.json</code></li>
+        <li>If banned, connection refused with ban message and reason</li>
+        <li>Ban details stored in browser localStorage</li>
+        <li>User redirected to <code>ip-banned.html</code></li>
+        <li>Access restricted to ban page, ToS, and Privacy Policy only</li>
+        <li>Navigation modal (./ command) disabled for banned users</li>
+        <li>All other pages and features blocked</li>
+      </ol>
+
+      <div class="info">
+        <strong>Access Restrictions:</strong> Banned users cannot access any pages except ip-banned.html, tos.html, and privacy.html. All navigation attempts (clicks, forms, keyboard shortcuts) are blocked.
+      </div>
+
+      <div class="warning">
+        <strong>For Schools:</strong> IP bans affect entire schools due to shared public IPs. UUID bans target individual students. Choose appropriately.
+      </div>
+    </div>
+
+    <!-- Sound Effects -->
+    <div class="section">
+      <h2>🔊 Sound Effects</h2>
+
+      <h3>Audio Notifications</h3>
+      <p>The game includes optional sound effects for enhanced engagement:</p>
+      <ul>
+        <li><strong>Broadcast Notification:</strong> Players hear a sound when receiving messages from the host</li>
+        <li><strong>All Answered Alert:</strong> Host hears a completion sound when all players have submitted answers</li>
+        <li><strong>Volume:</strong> Sounds play at 50% volume by default</li>
+        <li><strong>Optional:</strong> Game functions normally without sound files</li>
+      </ul>
+
+      <h3>Adding Sound Files</h3>
+      <ol>
+        <li>Create or download MP3 files:
+          <ul>
+            <li><code>notification.mp3</code> - Short beep/ding (1-2 seconds)</li>
+            <li><code>all-answered.mp3</code> - Success/completion chime (1-2 seconds)</li>
+          </ul>
+        </li>
+        <li>Place files in <code>public/sounds/</code> directory</li>
+        <li>Recommended sources:
+          <ul>
+            <li>https://pixabay.com/sound-effects/</li>
+            <li>https://freesound.org/</li>
+            <li>System notification sounds</li>
+          </ul>
+        </li>
+      </ol>
+
+      <div class="tip">
+        <strong>💡 Test Tool:</strong> Open <code>/sounds/sound-generator.html</code> to test Web Audio API-generated sounds as a starting point.
+      </div>
+
+      <div class="info">
+        <strong>Browser Compatibility:</strong> Sounds work in all modern browsers. If a sound file is missing, the feature silently fails without errors.
+      </div>
+    </div>
+
+    <!-- Security Features -->
+    <div class="section">
+      <h2>🛡️ Security Features</h2>
+
+      <h3>Input Validation & XSS Protection</h3>
+      <p>All user inputs are sanitized to prevent Cross-Site Scripting (XSS) attacks:</p>
+      <ul>
+        <li><strong>HTML Entity Encoding:</strong> Special characters (&lt; &gt; " ') converted to safe entities</li>
+        <li><strong>String Length Limits:</strong> Maximum 5000 characters per input field</li>
+        <li><strong>Array Bounds Checking:</strong> Validates array indices are within range</li>
+        <li><strong>Type Validation:</strong> Ensures data types match expected formats</li>
+      </ul>
+
+      <h3>Custom Question Upload Security</h3>
+      <p>The custom JSON upload feature includes multiple security layers:</p>
+      <ul>
+        <li><strong>File Size Limit:</strong> Maximum 5MB per upload (prevents DoS)</li>
+        <li><strong>Question Limit:</strong> Maximum 500 questions per file</li>
+        <li><strong>Format Validation:</strong> Validates JSON structure and required fields</li>
+        <li><strong>Content Sanitization:</strong> All question text sanitized before storage</li>
+        <li><strong>Type Whitelisting:</strong> Only approved question types accepted</li>
+      </ul>
+
+      <h3>Network Security</h3>
+      <ul>
+        <li><strong>Port Separation:</strong> Admin panel on separate port (3001) from main server (3000)</li>
+        <li><strong>IP-Based Access Control:</strong> Ban system tracks and blocks by IP address</li>
+        <li><strong>No External Dependencies:</strong> No third-party analytics or tracking</li>
+        <li><strong>HTTPS Ready:</strong> Can be deployed behind reverse proxy for SSL/TLS</li>
+      </ul>
     </div>
 
     <!-- Technical Details -->
@@ -596,10 +771,14 @@
       <ul>
         <li><strong>Home / Player Join</strong> (<code>/</code>) - Join a game as a player</li>
         <li><strong>Host Dashboard</strong> (<code>/host.html</code>) - Create and manage games</li>
-        <li><strong>Presenter View</strong> (<code>/presenter.html</code>) - Full-screen display for audience</li>
+        <li><strong>Presenter View</strong> (<code>/presenter.html</code>) - Full-screen display for audience (supports 16+ players with scrollable list)</li>
         <li><strong>Question Creator</strong> (<code>/creator.html</code>) - Create custom questions</li>
         <li><strong>Documentation</strong> (<code>/docs.html</code>) - This page!</li>
       </ul>
+
+      <div class="tip">
+        <strong>💡 Presenter View:</strong> The player list now scrolls automatically when there are many players (16+), ensuring all participants are visible. Broadcast messages sent to the presenter appear as animated banners at the top of the screen.
+      </div>
     </div>
 
     <!-- Troubleshooting -->
@@ -650,6 +829,26 @@
       </div>
     </div>
   </div>
+  <script>
+    // Check if UUID is banned before allowing access
+    function checkUUIDBan() {
+      const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+      const userUUID = localStorage.getItem('cbx_user_uuid') || '';
+      
+      if (bannedUUIDs.includes(userUUID)) {
+        // Redirect to game ban page
+        window.location.href = '/game-banned.html';
+        return true;
+      }
+      return false;
+    }
+
+    // Check on page load
+    if (checkUUIDBan()) {
+      // Stop script execution if banned
+      throw new Error('User is banned');
+    }
+  </script>
   <script src="navigation-modal.js"></script>
 </body>
 </html>

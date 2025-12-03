@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/diehyknwd/image/upload/v1734665441/favicon_1_zvl7ls.ico">
+  <title>Account Banned</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .ban-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 700px;
+      width: 100%;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .ban-icon {
+      font-size: 100px;
+      margin-bottom: 20px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    h1 {
+      color: #e74c3c;
+      margin-bottom: 20px;
+      font-size: 2.5em;
+    }
+
+    .ban-message {
+      color: #666;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .ban-details {
+      background: #f8f9fa;
+      border-left: 4px solid #e74c3c;
+      padding: 25px;
+      text-align: left;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .ban-details h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: #333;
+      min-width: 140px;
+    }
+
+    .detail-value {
+      color: #666;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .info-box {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .info-box h4 {
+      color: #856404;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .info-box p {
+      color: #856404;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .info-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .error-box {
+      background: #f8d7da;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .error-box h4 {
+      color: #721c24;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .error-box p {
+      color: #721c24;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .error-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .allowed-links {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #e0e0e0;
+    }
+
+    .allowed-links h4 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .link-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-link {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #6c757d;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .btn-link:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .help-text {
+      color: #999;
+      font-size: 13px;
+      margin-top: 30px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .timestamp {
+      color: #999;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .ban-container {
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      .ban-icon {
+        font-size: 80px;
+      }
+
+      .link-buttons {
+        flex-direction: column;
+      }
+
+      .btn-link {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ban-container">
+    <div class="ban-icon">⛔</div>
+    <h1>Account Banned</h1>
+    <p class="ban-message">
+      Your account has been permanently banned from accessing this quiz server.
+    </p>
+    
+    <div class="ban-details">
+      <h3>📋 Ban Information:</h3>
+      <div class="detail-row">
+        <span class="detail-label">Player Name:</span>
+        <span class="detail-value" id="playerName">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Reason:</span>
+        <span class="detail-value" id="banReason">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Date Banned:</span>
+        <span class="detail-value" id="banDate">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Ban Type:</span>
+        <span class="detail-value">Account Ban</span>
+      </div>
+      <div class="detail-row" id="unbanDateRow" style="display: none;">
+        <span class="detail-label">Ban Expires:</span>
+        <span class="detail-value" id="unbanDate" style="color: #28a745; font-weight: 600;"></span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h4>⚠️ Why am I seeing this?</h4>
+      <p>
+        Your account has been banned from accessing this server due to violations of the 
+        <a href="tos.html" style="color: #856404; font-weight: 600;">Terms of Service</a>.
+      </p>
+      <p>
+        Common reasons include: harassment, cheating, inappropriate usernames, 
+        disruptive behavior, spam, or repeated violations after warnings.
+      </p>
+    </div>
+
+    <div class="error-box">
+      <h4>🔒 Access Restrictions</h4>
+      <p>
+        While banned, you can <strong>only</strong> access this page, the Terms of Service, 
+        and the Privacy Policy. All game features and rooms are permanently blocked.
+      </p>
+      <p>
+        The navigation modal (./command) is disabled for banned accounts.
+      </p>
+    </div>
+
+    <div class="error-box" id="permanentBanBox">
+      <h4>🚫 Permanent Ban</h4>
+      <p>
+        This is a <strong>permanent account ban</strong>. This ban is tied to your account 
+        and cannot be bypassed through normal means.
+      </p>
+      <p>
+        Attempting to evade this ban may result in additional restrictions.
+      </p>
+    </div>
+
+    <div class="error-box" id="temporaryBanBox" style="display: none; background: #fff3cd; border-color: #ffc107;">
+      <h4 style="color: #856404;">⏱️ Temporary Ban</h4>
+      <p style="color: #856404;">
+        This is a <strong>temporary account ban</strong>. Your access will be automatically 
+        restored after the ban expires.
+      </p>
+      <p style="color: #856404;">
+        Please review the Terms of Service and ensure you understand the rules before returning.
+      </p>
+    </div>
+
+    <div class="allowed-links">
+      <h4>📄 You can still view:</h4>
+      <div class="link-buttons">
+        <a href="tos.html" class="btn-link">📜 Terms of Service</a>
+        <a href="privacy.html" class="btn-link">🔒 Privacy Policy</a>
+      </div>
+    </div>
+
+    <p class="help-text">
+      <strong>Appeal this ban:</strong><br>
+      If you believe this ban was issued in error, please contact the server administrator.
+      Include your player name and the timestamp shown above in your appeal.
+      <br><br>
+      <strong>Contact</strong><br>
+      <a href="mailto:cbgames.xyz@gmail.com">Email</a>
+    </p>
+
+    <p class="timestamp">
+      Page loaded: <span id="currentTime"></span><br>
+      Thank you for understanding.
+    </p>
+  </div>
+
+  <script>
+    // Load ban information from localStorage
+    function loadBanInfo() {
+      try {
+        const UUID_BAN_STORAGE_KEY = 'cbx_uuid_ban_info';
+        const banInfo = localStorage.getItem(UUID_BAN_STORAGE_KEY);
+        
+        if (banInfo) {
+          const ban = JSON.parse(banInfo);
+          
+          // Update UI with ban details
+          document.getElementById('playerName').textContent = ban.playerName || 'Unknown Player';
+          document.getElementById('banReason').textContent = ban.reason || 'Violation of Terms of Service';
+          
+          // Use bannedAt if available, otherwise use timestamp
+          const banTimestamp = ban.bannedAt || ban.timestamp;
+          if (banTimestamp) {
+            const date = new Date(banTimestamp);
+            document.getElementById('banDate').textContent = date.toLocaleString();
+          } else {
+            document.getElementById('banDate').textContent = 'Unknown';
+          }
+          
+          // Show unban date if it exists
+          if (ban.unbanDate) {
+            const unbanDate = new Date(ban.unbanDate);
+            const now = new Date();
+            document.getElementById('unbanDateRow').style.display = 'flex';
+            
+            if (unbanDate > now) {
+              const hoursLeft = Math.ceil((unbanDate - now) / (1000 * 60 * 60));
+              const daysLeft = Math.floor(hoursLeft / 24);
+              const remainingHours = hoursLeft % 24;
+              
+              let timeLeftText = '';
+              if (daysLeft > 0) {
+                timeLeftText = `${daysLeft} day${daysLeft > 1 ? 's' : ''} and ${remainingHours} hour${remainingHours !== 1 ? 's' : ''}`;
+              } else {
+                timeLeftText = `${hoursLeft} hour${hoursLeft !== 1 ? 's' : ''}`;
+              }
+              
+              document.getElementById('unbanDate').textContent = `${unbanDate.toLocaleString()} (in ${timeLeftText})`;
+              
+              // Show temporary ban box instead of permanent
+              document.getElementById('permanentBanBox').style.display = 'none';
+              document.getElementById('temporaryBanBox').style.display = 'block';
+              document.querySelector('.ban-message').textContent = 'Your account has been temporarily banned from accessing this quiz server.';
+            } else {
+              document.getElementById('unbanDate').textContent = `${unbanDate.toLocaleString()} (EXPIRED - refresh to check)`;
+              document.getElementById('unbanDate').style.color = '#dc3545';
+            }
+          }
+        } else {
+          // No ban info in localStorage, show defaults
+          document.getElementById('playerName').textContent = 'Unknown Player';
+          document.getElementById('banReason').textContent = 'Account banned by administrator';
+          document.getElementById('banDate').textContent = 'Unknown';
+        }
+      } catch (error) {
+        console.error('Error loading ban info:', error);
+        document.getElementById('playerName').textContent = 'Unknown Player';
+        document.getElementById('banReason').textContent = 'Error loading ban information';
+        document.getElementById('banDate').textContent = 'Unknown';
+      }
+    }
+
+    // Update current time
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('currentTime').textContent = now.toLocaleString();
+    }
+
+    // Check if user has been unbanned
+    async function checkUnbanStatus() {
+      try {
+        // Get UUID from localStorage
+        const userUUID = localStorage.getItem('cbx_user_uuid') || '';
+        
+        // Call the ban check API
+        const response = await fetch(`/api/check-ban?uuid=${encodeURIComponent(userUUID)}`);
+        const data = await response.json();
+        
+        if (!data.banned) {
+          // User is no longer banned!
+          // Clear ban info from localStorage
+          localStorage.removeItem('cbx_quiz_ban_info');
+          localStorage.removeItem('cbx_uuid_ban_info');
+          
+          const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+          if (userUUID && bannedUUIDs.includes(userUUID)) {
+            // Remove from banned UUIDs list
+            const updatedList = bannedUUIDs.filter(id => id !== userUUID);
+            localStorage.setItem('cbx_banned_uuids', JSON.stringify(updatedList));
+          }
+          
+          // Show notification and redirect
+          alert('Good news! Your ban has been lifted. Redirecting to home page...');
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('Error checking unban status:', error);
+      }
+    }
+
+    // Initialize page
+    loadBanInfo();
+    updateTime();
+    
+    // Check unban status every 10 seconds
+    checkUnbanStatus(); // Check immediately
+    setInterval(checkUnbanStatus, 10000); // Then check every 10 seconds
+
+    // Prevent navigation modal
+    document.addEventListener('keydown', function(e) {
+      // Block ./ shortcut
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && 
+          document.activeElement.tagName !== 'TEXTAREA') {
+        const beforeSlash = window.lastKeyWasperiod || false;
+        if (beforeSlash) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }
+      
+      if (e.key === '.') {
+        window.lastKeyWasperiod = true;
+        setTimeout(() => { window.lastKeyWasperiod = false; }, 500);
+      } else {
+        window.lastKeyWasperiod = false;
+      }
+    }, true);
+
+    // Intercept all navigation attempts except allowed pages
+    document.addEventListener('click', function(e) {
+      const target = e.target.closest('a');
+      if (target && target.href) {
+        const url = new URL(target.href);
+        const path = url.pathname;
+        
+        // Allow only tos.html and privacy.html
+        const allowedPages = ['/tos.html', '/privacy.html', '/game-banned.html'];
+        const isAllowed = allowedPages.some(page => path.endsWith(page));
+        
+        if (!isAllowed) {
+          e.preventDefault();
+          alert('Access denied: You can only view Terms of Service and Privacy Policy while banned.');
+          return false;
+        }
+      }
+    }, true);
+
+    // Prevent back/forward navigation to blocked pages
+    window.addEventListener('popstate', function(e) {
+      const currentPath = window.location.pathname;
+      const allowedPages = ['/tos.html', '/privacy.html', '/game-banned.html'];
+      const isAllowed = allowedPages.some(page => currentPath.endsWith(page));
+      
+      if (!isAllowed) {
+        window.location.href = 'game-banned.html';
+      }
+    });
+  </script>
+</body>
+</html>

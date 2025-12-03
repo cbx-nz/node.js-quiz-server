@@ -1,9 +1,35 @@
+# Dependencies
 node_modules/
+
+# Environment variables
 .env
+
+# Development files
 .todo
-inappropriate-words.json
 promopt.md
+.hintrc
+
+# Custom content files (user-specific)
+inappropriate-words.json
+banned-ips.json
+banned-uuids.json
+ban-requests.json
+requests-backup.json
+
+# Sound files (users should add their own)
+public/sounds/*.mp3
+public/sounds/*.wav
+public/sounds/*.ogg
+
+# Old/deprecated files
 earth-science-year9-10.json
 english-nz-year9-10.json
 redirectpage.html
-.hintrc
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -296,6 +296,25 @@
   </div>
 
   <script>
+    // Check if UUID is banned before allowing access
+    function checkUUIDBan() {
+      const bannedUUIDs = JSON.parse(localStorage.getItem('cbx_banned_uuids') || '[]');
+      const userUUID = localStorage.getItem('cbx_user_uuid') || '';
+      
+      if (bannedUUIDs.includes(userUUID)) {
+        // Redirect to game ban page
+        window.location.href = '/game-banned.html';
+        return true;
+      }
+      return false;
+    }
+
+    // Check on page load
+    if (checkUUIDBan()) {
+      // Stop script execution if banned
+      throw new Error('User is banned');
+    }
+
     let questions = [];
 
     // Update UI based on question type

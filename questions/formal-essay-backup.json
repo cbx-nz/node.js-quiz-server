@@ -1,0 +1,242 @@
+﻿[
+  {
+    "type": "multiple-choice",
+    "question": "Which is the correct structure for a formal essay?",
+    "options": [
+      "Introduction, Body Paragraphs, Conclusion",
+      "Title, Body, End",
+      "Start, Middle, Finish",
+      "Opening, Content, Closing"
+    ],
+    "answer": 0,
+    "explanation": "A formal essay follows the structure: Introduction (with thesis), Body Paragraphs (with topic sentences and evidence), and Conclusion (summarizing main points)."
+  },
+    {
+      "type": "multiple-choice",
+      "question": "What is a thesis statement?",
+      "options": [
+        "The main argument or claim of your essay",
+        "A question you ask the reader",
+        "The first sentence of each paragraph",
+        "A summary of what you read"
+      ],
+      "answer": "The main argument or claim of your essay",
+      "explanation": "A thesis statement presents the main argument or central claim that your essay will prove or discuss. It usually appears at the end of the introduction."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Which sentence is written in formal language?",
+      "options": [
+        "The research demonstrates a significant correlation between the variables.",
+        "The research kinda shows that the things are related.",
+        "It's pretty obvious that these two things go together.",
+        "You can totally see how they're connected."
+      ],
+      "answer": "The research demonstrates a significant correlation between the variables.",
+      "explanation": "Formal language avoids contractions, slang, and casual expressions. It uses precise vocabulary and maintains an objective tone."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What should you avoid in formal essay writing?",
+      "options": [
+        "First-person pronouns (I, me, my)",
+        "Evidence and examples",
+        "Clear topic sentences",
+        "Linking words and phrases"
+      ],
+      "answer": "First-person pronouns (I, me, my)",
+      "explanation": "Formal essays should avoid first-person pronouns and maintain an objective, academic tone. Use third person instead (e.g., 'This essay argues...' rather than 'I think...')."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What is the purpose of a topic sentence?",
+      "options": [
+        "To introduce the main idea of a paragraph",
+        "To conclude your entire essay",
+        "To provide a quote from a source",
+        "To ask a rhetorical question"
+      ],
+      "answer": "To introduce the main idea of a paragraph",
+      "explanation": "A topic sentence states the main idea of a paragraph and connects it back to the thesis statement. It should be the first sentence of each body paragraph."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Which transition word shows a contrasting idea?",
+      "options": [
+        "However",
+        "Furthermore",
+        "Additionally",
+        "Similarly"
+      ],
+      "answer": "However",
+      "explanation": "'However' indicates a contrast or opposing viewpoint. Other contrast words include 'nevertheless', 'on the other hand', and 'conversely'."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What is the P.E.E.L paragraph structure?",
+      "options": [
+        "Point, Evidence, Explanation, Link",
+        "Person, Event, Example, List",
+        "Predict, Examine, Evaluate, Learn",
+        "Pause, Edit, Elaborate, List"
+      ],
+      "answer": "Point, Evidence, Explanation, Link",
+      "explanation": "P.E.E.L stands for: Point (topic sentence), Evidence (quote or example), Explanation (analysis), Link (back to thesis). This structure helps create strong analytical paragraphs."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "How should you integrate a quote into your essay?",
+      "options": [
+        "Use a signal phrase and cite the source",
+        "Just drop it in without introduction",
+        "Put it in a separate paragraph alone",
+        "Use it as your topic sentence"
+      ],
+      "answer": "Use a signal phrase and cite the source",
+      "explanation": "Quotes should be introduced with signal phrases (e.g., 'According to Smith...') and properly cited. Never drop quotes in without context or explanation."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What is the main purpose of the introduction?",
+      "options": [
+        "To engage the reader and present the thesis",
+        "To provide all your evidence",
+        "To conclude your argument",
+        "To list all your sources"
+      ],
+      "answer": "To engage the reader and present the thesis",
+      "explanation": "The introduction should hook the reader's interest, provide context, and clearly state your thesis. It sets up what your essay will argue."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Which is NOT appropriate for a formal essay conclusion?",
+      "options": [
+        "Introducing brand new arguments",
+        "Restating the thesis in different words",
+        "Summarizing main points",
+        "Providing final insights"
+      ],
+      "answer": "Introducing brand new arguments",
+      "explanation": "Conclusions should not introduce new information or arguments. They should restate the thesis, summarize key points, and provide closure."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What does 'analysis' mean in essay writing?",
+      "options": [
+        "Explaining the deeper meaning and significance of evidence",
+        "Just describing what happens",
+        "Copying information from sources",
+        "Writing as much as possible"
+      ],
+      "answer": "Explaining the deeper meaning and significance of evidence",
+      "explanation": "Analysis means breaking down evidence and explaining how it supports your argument. It goes beyond description to explore meaning, patterns, and significance."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What is plagiarism?",
+      "options": [
+        "Using someone else's words or ideas without proper citation",
+        "Using transition words in your writing",
+        "Citing your sources correctly",
+        "Paraphrasing with attribution"
+      ],
+      "answer": "Using someone else's words or ideas without proper citation",
+      "explanation": "Plagiarism is presenting someone else's work as your own. Always cite sources and use quotation marks for direct quotes. Paraphrasing still requires citation."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Which linking phrase adds information?",
+      "options": [
+        "Furthermore",
+        "On the contrary",
+        "Despite this",
+        "In contrast"
+      ],
+      "answer": "Furthermore",
+      "explanation": "'Furthermore' adds additional supporting information. Other addition words include 'moreover', 'additionally', 'in addition', and 'also'."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What is the purpose of proofreading?",
+      "options": [
+        "To check for spelling, grammar, and punctuation errors",
+        "To write new paragraphs",
+        "To change your thesis completely",
+        "To remove all your evidence"
+      ],
+      "answer": "To check for spelling, grammar, and punctuation errors",
+      "explanation": "Proofreading is the final step where you check for technical errors in spelling, grammar, punctuation, and formatting. It ensures your writing is polished and professional."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What is a counter-argument?",
+      "options": [
+        "An opposing viewpoint that you acknowledge and refute",
+        "The main argument of your essay",
+        "Evidence that supports your thesis",
+        "A summary of your conclusion"
+      ],
+      "answer": "An opposing viewpoint that you acknowledge and refute",
+      "explanation": "A counter-argument presents an opposing view that you then address and refute. Including counter-arguments shows critical thinking and strengthens your essay."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Which is an example of specific evidence?",
+      "options": [
+        "In Chapter 3, Scout realizes that 'you never really understand a person until...'",
+        "Lots of people think this way",
+        "Everyone agrees with this point",
+        "It's really important to society"
+      ],
+      "answer": "In Chapter 3, Scout realizes that 'you never really understand a person until...'",
+      "explanation": "Specific evidence includes direct quotes, statistics, examples, and concrete details with proper references. Vague statements like 'lots of people' are not strong evidence."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What is the difference between summarizing and analyzing?",
+      "options": [
+        "Summarizing retells what happens; analyzing explains why it matters",
+        "They mean exactly the same thing",
+        "Summarizing is longer than analyzing",
+        "Analyzing only happens in conclusions"
+      ],
+      "answer": "Summarizing retells what happens; analyzing explains why it matters",
+      "explanation": "Summarizing describes or retells events/information. Analyzing goes deeper by explaining significance, making connections, and interpreting meaning in relation to your argument."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What should each body paragraph focus on?",
+      "options": [
+        "One main idea that supports the thesis",
+        "Multiple unrelated topics",
+        "Only quotes without explanation",
+        "Personal opinions without evidence"
+      ],
+      "answer": "One main idea that supports the thesis",
+      "explanation": "Each body paragraph should focus on one main idea (stated in the topic sentence) that supports your thesis. This creates clarity and strong paragraph coherence."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Why is it important to plan your essay before writing?",
+      "options": [
+        "To organize ideas and ensure a logical structure",
+        "To make the essay shorter",
+        "To avoid using any evidence",
+        "To write it as quickly as possible"
+      ],
+      "answer": "To organize ideas and ensure a logical structure",
+      "explanation": "Planning helps organize your thoughts, arrange arguments logically, ensure you have sufficient evidence, and create a coherent structure. It makes the writing process more efficient."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "What is academic tone?",
+      "options": [
+        "Formal, objective, and professional language",
+        "Using lots of slang and emojis",
+        "Writing exactly like you talk",
+        "Being emotional and personal"
+      ],
+      "answer": "Formal, objective, and professional language",
+      "explanation": "Academic tone is formal, objective, and impersonal. It avoids slang, contractions, colloquialisms, and overly emotional language, maintaining a professional scholarly voice."
+    }
+  ]

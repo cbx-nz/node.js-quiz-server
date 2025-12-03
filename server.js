@@ -5,12 +5,75 @@ const { Server } = require('socket.io');
 const fs = require('fs');
 const path = require('path');
 
+// Start admin server
+const adminServer = require('./admin-server');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+// Pass IO instance to admin server for real-time ban notifications
+adminServer.setMainServerIO(io);
+
+// Middleware for parsing JSON uploads (with size limit for security)
+app.use(express.json({ limit: '5mb' }));
+
+// Block access to admin.html from main server (only accessible via admin server port)
+app.use((req, res, next) => {
+  if (req.path === '/admin.html' || req.path === '/admin') {
+    return res.status(403).send('Forbidden: Admin panel is only accessible on the admin server port');
+  }
+  next();
+});
+
+// IP ban middleware - check IP for page access (but not API endpoints)
+app.use((req, res, next) => {
+  // Skip IP check for API endpoints to prevent loops in devtunnel scenarios
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
+  
+  // Skip IP check for ban page itself and allowed pages
+  const allowedPaths = ['/ip-banned.html', '/game-banned.html', '/tos.html', '/privacy.html'];
+  if (allowedPaths.some(path => req.path === path || req.path.endsWith(path))) {
+    return next();
+  }
+  
+  // Check if requester's IP is banned
+  const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const ipBanInfo = adminServer.getBanInfo(clientIP);
+  
+  if (ipBanInfo) {
+    // Redirect to ban page
+    return res.redirect('/ip-banned.html');
+  }
+  
+  next();
+});
+
 // Serve static files from the public directory
 app.use(express.static('public'));
+
+// API endpoint to check ban status (UUID only - IP checked via middleware)
+// Note: This endpoint only checks the UUID ban status, not the requester's IP.
+// This prevents loops when using devtunnels where all requests come from 127.0.0.1
+app.get('/api/check-ban', (req, res) => {
+  const userUUID = req.query.uuid;
+  
+  // Only check UUID ban (not requester's IP)
+  if (userUUID && adminServer.isUUIDBanned(userUUID)) {
+    const uuidBanInfo = adminServer.getUUIDBanInfo(userUUID);
+    return res.json({
+      banned: true,
+      type: 'uuid',
+      uuid: userUUID,
+      reason: uuidBanInfo.reason,
+      timestamp: uuidBanInfo.timestamp
+    });
+  }
+  
+  res.json({ banned: false });
+});
 
 // API endpoint to get available subjects
 app.get('/api/subjects', (req, res) => {
@@ -20,6 +83,104 @@ app.get('/api/subjects', (req, res) => {
     questionCount: subjects[key].length
   }));
   res.json(subjectList);
+});
+
+// API endpoint to validate and use custom JSON questions (security-hardened)
+app.post('/api/validate-questions', (req, res) => {
+  try {
+    const { questions: customQuestions } = req.body;
+
+    // Security check 1: Validate input exists
+    if (!customQuestions || !Array.isArray(customQuestions)) {
+      return res.status(400).json({ 
+        valid: false, 
+        error: 'Invalid format: Expected an array of questions' 
+      });
+    }
+
+    // Security check 2: Limit number of questions (prevent DoS)
+    if (customQuestions.length > 500) {
+      return res.status(400).json({ 
+        valid: false, 
+        error: 'Too many questions. Maximum is 500 questions per set.' 
+      });
+    }
+
+    // Security check 3: Validate each question structure
+    const validQuestions = [];
+    const errors = [];
+
+    customQuestions.forEach((q, index) => {
+      // Check required fields
+      if (!q.type || !q.question) {
+        errors.push(`Question ${index + 1}: Missing required fields (type, question)`);
+        return;
+      }
+
+      // Validate question type
+      const validTypes = ['multiple-choice', 'truefalse', 'text', 'flashcard', 'decision'];
+      if (!validTypes.includes(q.type)) {
+        errors.push(`Question ${index + 1}: Invalid type "${q.type}"`);
+        return;
+      }
+
+      // Security check 4: Sanitize strings (prevent XSS)
+      const sanitizeString = (str) => {
+        if (typeof str !== 'string') return str;
+        return str
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#x27;')
+          .substring(0, 5000); // Limit string length
+      };
+
+      // Build sanitized question object
+      const sanitizedQuestion = {
+        type: q.type,
+        question: sanitizeString(q.question),
+        explanation: q.explanation ? sanitizeString(q.explanation) : ''
+      };
+
+      // Validate type-specific fields
+      if (q.type === 'multiple-choice' || q.type === 'truefalse') {
+        if (!Array.isArray(q.options) || q.options.length < 2) {
+          errors.push(`Question ${index + 1}: Invalid options array`);
+          return;
+        }
+        if (typeof q.answer !== 'number' || q.answer < 0 || q.answer >= q.options.length) {
+          errors.push(`Question ${index + 1}: Invalid answer index`);
+          return;
+        }
+        sanitizedQuestion.options = q.options.map(opt => sanitizeString(String(opt))).slice(0, 10);
+        sanitizedQuestion.answer = q.answer;
+      }
+
+      validQuestions.push(sanitizedQuestion);
+    });
+
+    // Return validation results
+    if (errors.length > 0 && validQuestions.length === 0) {
+      return res.status(400).json({ 
+        valid: false, 
+        error: errors.join('; ') 
+      });
+    }
+
+    res.json({ 
+      valid: true, 
+      questionCount: validQuestions.length,
+      questions: validQuestions,
+      warnings: errors.length > 0 ? errors : null
+    });
+
+  } catch (error) {
+    console.error('Error validating questions:', error);
+    res.status(500).json({ 
+      valid: false, 
+      error: 'Server error while validating questions' 
+    });
+  }
 });
 
 // Load all question files
@@ -92,7 +253,8 @@ function createRoom(roomCode) {
     presenters: [], // Array of presenter socket IDs
     subject: 'general', // Default subject
     questions: subjects['general'] || [], // Questions for this room
-    questionStartTime: null // Track when question was sent
+    questionStartTime: null, // Track when question was sent
+    clapCount: 0 // Track total claps for end of game
   };
   console.log(`Room ${roomCode} created`);
 }
@@ -103,7 +265,7 @@ function createRoom(roomCode) {
 function getSanitizedQuestion(question) {
   const sanitized = { ...question };
   // Don't send the answer to clients for questions that need validation
-  if (question.type === 'multiple-choice' || question.type === 'truefalse') {
+  if (question.type === 'multiple-choice' || question.type === 'truefalse' || question.type === 'multi-choice') {
     delete sanitized.answer;
   }
   return sanitized;
@@ -115,6 +277,16 @@ function getSanitizedQuestion(question) {
 function checkAnswer(question, userAnswer) {
   if (question.type === 'multiple-choice' || question.type === 'truefalse') {
     return question.answer === userAnswer;
+  }
+  if (question.type === 'multi-choice') {
+    // Multi-choice: compare arrays (all correct answers must be selected)
+    if (!Array.isArray(userAnswer) || !Array.isArray(question.answer)) {
+      return false;
+    }
+    // Sort both arrays and compare
+    const sortedUser = [...userAnswer].sort((a, b) => a - b);
+    const sortedCorrect = [...question.answer].sort((a, b) => a - b);
+    return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
   }
   // For decision, flashcard, and open questions, there's no "correct" answer
   return null;
@@ -148,7 +320,23 @@ function calculateScore(room, timestamp) {
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
+  // Get client IP address
+  const clientIP = (socket.handshake.address || '').replace('::ffff:', '');
+  console.log(`User connected: ${socket.id} from IP: ${clientIP}`);
+
+  // Check if IP is banned
+  if (adminServer.isIPBanned(clientIP)) {
+    const banInfo = adminServer.getBanInfo(clientIP);
+    console.log(`Blocked connection from banned IP: ${clientIP}`);
+    socket.emit('banned', { 
+      message: 'Your IP address has been banned from this server.',
+      reason: banInfo ? banInfo.reason : 'Prohibited conduct',
+      ip: clientIP,
+      unbanDate: banInfo ? banInfo.unbanDate : null
+    });
+    socket.disconnect(true);
+    return;
+  }
 
   /**
    * HOST: Create a new room
@@ -177,9 +365,9 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Don't allow changing subject after game has started
-    if (rooms[roomCode].gameStarted) {
-      socket.emit('error', { message: 'Cannot change subject after game has started' });
+    // Don't allow changing subject while game is actively running
+    if (rooms[roomCode].gameStarted && !rooms[roomCode].gameEnded) {
+      socket.emit('error', { message: 'Cannot change subject while game is running' });
       return;
     }
 
@@ -192,7 +380,58 @@ io.on('connection', (socket) => {
       questionCount: subjects[subject].length 
     });
     
+    // Notify presenters of subject change
+    if (rooms[roomCode].presenters) {
+      rooms[roomCode].presenters.forEach(presenterSocketId => {
+        io.to(presenterSocketId).emit('subject-info', {
+          subject: subject
+        });
+      });
+    }
+    
     console.log(`Room ${roomCode} subject changed to ${subject}`);
+  });
+
+  /**
+   * HOST: Set custom questions for the room
+   */
+  socket.on('host-set-custom-questions', (data) => {
+    const { roomCode, questions } = data;
+    if (!rooms[roomCode] || rooms[roomCode].host !== socket.id) {
+      socket.emit('error', { message: 'Not authorized or room not found' });
+      return;
+    }
+
+    if (!Array.isArray(questions) || questions.length === 0) {
+      socket.emit('error', { message: 'Invalid questions array' });
+      return;
+    }
+
+    // Don't allow changing questions while game is actively running
+    if (rooms[roomCode].gameStarted && !rooms[roomCode].gameEnded) {
+      socket.emit('error', { message: 'Cannot change questions while game is running' });
+      return;
+    }
+
+    rooms[roomCode].subject = 'custom';
+    rooms[roomCode].questions = questions;
+    rooms[roomCode].questionIndex = -1; // Reset question index
+
+    socket.emit('subject-changed', { 
+      subject: 'custom', 
+      questionCount: questions.length 
+    });
+    
+    // Notify presenters of subject change to custom
+    if (rooms[roomCode].presenters) {
+      rooms[roomCode].presenters.forEach(presenterSocketId => {
+        io.to(presenterSocketId).emit('subject-info', {
+          subject: 'custom'
+        });
+      });
+    }
+    
+    console.log(`Room ${roomCode} loaded ${questions.length} custom questions`);
   });
 
   /**
@@ -205,9 +444,38 @@ io.on('connection', (socket) => {
       return;
     }
 
-    rooms[roomCode].gameStarted = true;
+    const room = rooms[roomCode];
+    room.gameStarted = true;
+    room.gameEnded = false;
+    
+    // Reset all player scores if starting a new game after ending
+    Object.values(room.players).forEach(player => {
+      player.score = 0;
+    });
+    
+    // Immediately load the first question
+    room.questionIndex = 0;
+    room.answers = {};
+    room.currentQuestion = room.questions[room.questionIndex];
+    room.questionStartTime = Date.now();
+
+    // Notify game started
     io.to(roomCode).emit('game-started');
-    console.log(`Game started in room ${roomCode}`);
+    
+    // Send updated player list with reset scores
+    io.to(roomCode).emit('player-list-updated', {
+      players: Object.values(room.players)
+    });
+
+    // Send first question to everyone
+    const sanitizedQuestion = getSanitizedQuestion(room.currentQuestion);
+    io.to(roomCode).emit('new-question', {
+      question: sanitizedQuestion,
+      questionNumber: room.questionIndex + 1,
+      totalQuestions: room.questions.length
+    });
+
+    console.log(`Game started in room ${roomCode} with first question`);
   });
 
   /**
@@ -238,6 +506,46 @@ io.on('connection', (socket) => {
       
       console.log(`Host kicked player ${playerName} (${socketId}) from room ${roomCode}`);
     }
+  });
+
+  /**
+   * HOST: Request a ban for a player
+   */
+  socket.on('host-request-ban', (data) => {
+    const { roomCode, socketId, playerName, reason } = data;
+    if (!rooms[roomCode] || rooms[roomCode].host !== socket.id) {
+      socket.emit('error', { message: 'Not authorized or room not found' });
+      return;
+    }
+
+    const room = rooms[roomCode];
+    const player = room.players[socketId];
+    
+    if (!player) {
+      socket.emit('error', { message: 'Player not found' });
+      return;
+    }
+
+    // Get player's UUID and IP from room data and socket
+    const playerUUID = player.userUUID || 'unknown';
+    const playerSocket = io.sockets.sockets.get(socketId);
+    const playerIP = playerSocket ? (playerSocket.handshake.headers['x-forwarded-for'] || playerSocket.handshake.address) : 'unknown';
+
+    // Create ban request
+    const banRequest = {
+      playerName: playerName,
+      uuid: playerUUID,
+      playerIP: playerIP,
+      reason: reason,
+      requestedBy: `Host of room ${roomCode}`,
+      roomCode: roomCode,
+      timestamp: Date.now()
+    };
+
+    // Add to admin server's ban requests
+    adminServer.addBanRequest(banRequest);
+
+    console.log(`Ban request submitted for ${playerName} (UUID: ${playerUUID}) in room ${roomCode}`);
   });
 
   /**
@@ -298,12 +606,34 @@ io.on('connection', (socket) => {
     const room = rooms[roomCode];
     room.gameEnded = true;
     room.gameStarted = false;
+    room.clapCount = 0; // Reset clap count for next game
     
+    // Don't delete room or players, just end the game
     io.to(roomCode).emit('game-ended', {
-      message: 'Game ended by host',
+      message: 'Game ended by host. Waiting for next game...',
       finalScores: Object.values(room.players)
     });
-    console.log(`Game ended in room ${roomCode}`);
+    console.log(`Game ended in room ${roomCode} (room still active)`);
+  });
+
+  /**
+   * HOST: End room completely (disconnect all players and delete room)
+   */
+  socket.on('host-end-room', (data) => {
+    const { roomCode } = data;
+    if (!rooms[roomCode] || rooms[roomCode].host !== socket.id) {
+      socket.emit('error', { message: 'Not authorized or room not found' });
+      return;
+    }
+
+    // Notify all players that room is closing
+    io.to(roomCode).emit('room-closed', {
+      message: 'Room has been closed by the host'
+    });
+
+    // Delete the room
+    delete rooms[roomCode];
+    console.log(`Room ${roomCode} completely closed and deleted`);
   });
 
   /**
@@ -367,13 +697,65 @@ io.on('connection', (socket) => {
   });
 
   /**
+   * HOST: Broadcast message to specific players
+   */
+  socket.on('host-broadcast-targeted', (data) => {
+    const { roomCode, message, playerIds } = data;
+    if (!rooms[roomCode] || rooms[roomCode].host !== socket.id) {
+      socket.emit('error', { message: 'Not authorized or room not found' });
+      return;
+    }
+
+    // Send to specific players
+    playerIds.forEach(playerId => {
+      io.to(playerId).emit('host-message', { message });
+    });
+    
+    console.log(`Host sent targeted broadcast to ${playerIds.length} players in room ${roomCode}`);
+  });
+
+  /**
+   * HOST: Broadcast message to presenter
+   */
+  socket.on('host-broadcast-presenter', (data) => {
+    const { roomCode, message } = data;
+    if (!rooms[roomCode] || rooms[roomCode].host !== socket.id) {
+      socket.emit('error', { message: 'Not authorized or room not found' });
+      return;
+    }
+
+    // Send to all presenters
+    rooms[roomCode].presenters.forEach(presenterSocketId => {
+      io.to(presenterSocketId).emit('presenter-message', { message });
+    });
+    
+    console.log(`Host sent broadcast to presenter in room ${roomCode}`);
+  });
+
+  /**
    * PLAYER: Join a room
    */
   socket.on('player-join-room', (data) => {
-    const { roomCode, playerName } = data;
+    const { roomCode, playerName, userUUID } = data;
     
     if (!rooms[roomCode]) {
       socket.emit('error', { message: 'Room not found' });
+      return;
+    }
+    
+    // Check if UUID is banned
+    if (userUUID && adminServer.isUUIDBanned(userUUID)) {
+      const banInfo = adminServer.getUUIDBanInfo(userUUID);
+      console.log(`Blocked connection from banned UUID: ${userUUID}`);
+      socket.emit('uuid-banned', { 
+        message: 'You have been banned from this server.',
+        reason: banInfo ? banInfo.reason : 'Prohibited conduct',
+        playerName: banInfo ? banInfo.playerName : playerName,
+        bannedAt: banInfo ? banInfo.bannedAt : Date.now(),
+        unbanDate: banInfo ? banInfo.unbanDate : null,
+        uuid: userUUID
+      });
+      socket.disconnect(true);
       return;
     }
     
@@ -383,15 +765,20 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Add player to room
+    // Add player to room with UUID
     rooms[roomCode].players[socket.id] = {
       name: playerName,
       score: 0,
-      socketId: socket.id
+      socketId: socket.id,
+      userUUID: userUUID || null
     };
 
     socket.join(roomCode);
-    socket.emit('room-joined', { roomCode, playerName });
+    socket.emit('room-joined', { 
+      roomCode, 
+      playerName,
+      score: rooms[roomCode].players[socket.id].score
+    });
 
     // Notify host and all players of the new player
     io.to(roomCode).emit('player-list-updated', {
@@ -529,6 +916,11 @@ io.on('connection', (socket) => {
       answers: Object.values(room.answers)
     });
 
+    // Update player list with new scores for host and presenter
+    io.to(roomCode).emit('player-list-updated', {
+      players: Object.values(room.players)
+    });
+
     // If all players have answered, reveal the correct answer to everyone
     if (answeredCount === totalPlayers && totalPlayers > 0) {
       // Reveal to presenters
@@ -560,6 +952,58 @@ io.on('connection', (socket) => {
     }
 
     console.log(`Player ${socket.id} answered in room ${roomCode}`);
+  });
+
+  /**
+   * PLAYER: Clap button pressed
+   */
+  socket.on('player-clap', (data) => {
+    const { roomCode } = data;
+    
+    if (!rooms[roomCode]) {
+      socket.emit('error', { message: 'Room not found' });
+      return;
+    }
+
+    const room = rooms[roomCode];
+    
+    // Increment clap count
+    room.clapCount++;
+    
+    // Broadcast updated clap count to everyone in the room
+    io.to(roomCode).emit('clap-update', {
+      totalClaps: room.clapCount
+    });
+
+    console.log(`Player clapped in room ${roomCode}, total claps: ${room.clapCount}`);
+  });
+
+  /**
+   * Handle player disconnect (explicit)
+   */
+  socket.on('player-disconnect', ({ roomCode, playerName }) => {
+    if (!rooms[roomCode]) return;
+
+    const room = rooms[roomCode];
+    
+    // Remove the player
+    if (room.players[socket.id]) {
+      delete room.players[socket.id];
+      delete room.answers[socket.id];
+      
+      const playersList = Object.keys(room.players).map(id => ({
+        name: room.players[id].name,
+        score: room.players[id].score,
+        socketId: id
+      }));
+
+      io.to(roomCode).emit('player-list-updated', {
+        players: playersList,
+        count: playersList.length
+      });
+
+      console.log(`Player ${playerName} (${socket.id}) disconnected from room ${roomCode}`);
+    }
   });
 
   /**
@@ -596,6 +1040,15 @@ io.on('connection', (socket) => {
   });
 });
 
+// Update global stats for admin panel
+function updateGlobalStats() {
+  global.activeRooms = Object.keys(rooms).length;
+  global.connectedUsers = io.engine.clientsCount || 0;
+}
+
+// Update stats every 5 seconds
+setInterval(updateGlobalStats, 5000);
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 const URL = process.env.URL || `http://localhost:${PORT}`;
@@ -603,6 +1056,7 @@ server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log(`Host dashboard: http://localhost:${PORT}/host.html`);
   console.log(`Player interface: http://localhost:${PORT}`);
-  console.log(`Quick Redirect: ${URL}`);
+  console.log(`cbx-nz developer link: ${URL}`);
   console.log(`<--->\nLogs will appear below as players and hosts connect.\n<--->`);
+  updateGlobalStats();
 });

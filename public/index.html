@@ -408,7 +408,13 @@
       <div class="status">Game Over!</div>
       <div id="endMessage" class="result neutral"></div>
       <div class="score">Your Final Score: <span id="finalScore">0</span></div>
-      <button onclick="location.reload()">Play Again</button>
+      <div style="margin: 20px 0;">
+        <button id="clapButton" style="font-size: 2em; padding: 20px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 15px; cursor: pointer; transition: transform 0.1s;">
+          👏 Clap!
+        </button>
+        <div id="clapCount" style="margin-top: 10px; font-size: 1.2em; color: #667eea;">Total Claps: <span id="totalClaps">0</span></div>
+      </div>
+      <button onclick="location.reload()">Join a different room.</button>
     </div>
   </div>
 
@@ -416,6 +422,7 @@
   <div id="broadcastBanner" class="broadcast-banner"></div>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script src="ban-check.js"></script>
   <script src="client.js"></script>
   <script src="navigation-modal.js"></script>
 </body>

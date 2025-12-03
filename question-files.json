@@ -4,5 +4,7 @@
   "mathematics": "mathematics.json",
   "science": "science.json",
   "history": "history.json",
-  "earth-science": "earth-science-year9-10.json"
+  "earth-science": "earth-science-year9-10.json",
+  "formal-essay": "formal-essay.json",
+  "developer-test-questions": "questions.json"
 }

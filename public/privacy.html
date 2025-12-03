@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/diehyknwd/image/upload/v1734665441/favicon_1_zvl7ls.ico">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+  <title>Privacy Policy - Quiz Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+
+    .last-updated {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #764ba2;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-size: 1.8em;
+    }
+
+    h3 {
+      color: #667eea;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 1.3em;
+    }
+
+    p {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    ul {
+      margin-left: 30px;
+      margin-bottom: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .info-box {
+      background: #e8f4fd;
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+
+    .warning-box {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+
+    .back-link:hover {
+      transform: translateY(-2px);
+    }
+
+    strong {
+      color: #667eea;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔒 Privacy Policy</h1>
+    <p class="last-updated">Last Updated: December 2, 2025</p>
+
+    <p>This Privacy Policy describes how the Quiz Game ("we", "our", or "the application") collects, uses, and protects your information when you use our real-time multiplayer quiz application.</p>
+
+    <h2>1. Information We Collect</h2>
+
+    <h3>1.1 Information You Provide</h3>
+    <ul>
+      <li><strong>Username:</strong> When joining a game, you provide a display name (subject to content filtering)</li>
+      <li><strong>Quiz Responses:</strong> Your answers to quiz questions during gameplay</li>
+      <li><strong>Custom Questions:</strong> Any questions you create using the Question Creator</li>
+    </ul>
+
+    <h3>1.2 Automatically Collected Information</h3>
+    <ul>
+      <li><strong>Connection Data:</strong> Socket.IO connection identifiers (temporary session IDs)</li>
+      <li><strong>IP Addresses:</strong> Collected for security purposes and ban enforcement (see Section 8)</li>
+      <li><strong>Game Statistics:</strong> Scores, answer timing, and game participation data</li>
+      <li><strong>Technical Data:</strong> Browser type, device information (for compatibility purposes)</li>
+    </ul>
+
+    <div class="info-box">
+      <strong>Note:</strong> This application is designed for <strong>local/self-hosted use</strong>. No data is transmitted to external servers unless you choose to deploy it on a remote server.
+    </div>
+
+    <h2>2. How We Use Your Information</h2>
+
+    <p>We use the collected information to:</p>
+    <ul>
+      <li><strong>Facilitate Gameplay:</strong> Display usernames, track scores, and manage game sessions</li>
+      <li><strong>Real-Time Communication:</strong> Enable host-player and presenter-host interactions via WebSocket</li>
+      <li><strong>Content Filtering:</strong> Apply inappropriate word filtering to usernames</li>
+      <li><strong>Game Statistics:</strong> Show real-time answer counts and leaderboards</li>
+      <li><strong>Session Management:</strong> Track connected players and manage disconnections</li>
+    </ul>
+
+    <h2>3. Data Storage and Retention</h2>
+
+    <h3>3.1 Temporary Data</h3>
+    <ul>
+      <li><strong>Session Data:</strong> All game data (usernames, scores, answers) is stored <strong>in memory only</strong></li>
+      <li><strong>Automatic Deletion:</strong> All player data is deleted when:
+        <ul>
+          <li>The player disconnects or closes their browser</li>
+          <li>The host ends the game</li>
+          <li>The server is restarted</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>3.2 Persistent Data</h3>
+    <ul>
+      <li><strong>Question Files:</strong> JSON files in the <code>questions/</code> folder (stored locally on server)</li>
+      <li><strong>Configuration:</strong> Settings in <code>.env</code> and <code>question-files.json</code></li>
+      <li><strong>Custom Questions:</strong> If you create questions, they're saved locally on your server</li>
+      <li><strong>Ban Information:</strong> IP addresses and ban reasons stored in <code>banned-ips.json</code> for security enforcement</li>
+      <li><strong>Browser Storage:</strong> Ban status stored in browser localStorage to prevent reconnection</li>
+    </ul>
+
+    <div class="warning-box">
+      <strong>Important:</strong> Since all game data is stored in server memory, no player information persists after a game session ends. There is no permanent database.
+    </div>
+
+    <h2>4. Data Sharing and Disclosure</h2>
+
+    <h3>4.1 Within Game Sessions</h3>
+    <p>During active gameplay, the following information is shared:</p>
+    <ul>
+      <li><strong>To All Players:</strong> Usernames and scores on leaderboards</li>
+      <li><strong>To Host:</strong> All player usernames, scores, and answer submissions</li>
+      <li><strong>To Presenter View:</strong> Usernames, scores, questions, and aggregate statistics</li>
+    </ul>
+
+    <h3>4.2 Third Parties</h3>
+    <p>We <strong>do not share</strong> your information with third parties. The application:</p>
+    <ul>
+      <li>Does not use analytics services</li>
+      <li>Does not use advertising networks</li>
+      <li>Does not sell or rent user data</li>
+      <li>Does not transmit data to external APIs (except Cloudinary for favicon hosting)</li>
+    </ul>
+
+    <h2>5. Cookies and Local Storage</h2>
+
+    <p>This application uses minimal local storage:</p>
+    <ul>
+      <li><strong>Ban Detection:</strong> If your IP is banned by an administrator, ban information is stored in browser localStorage to prevent reconnection</li>
+      <li><strong>No Tracking:</strong> We do not use cookies or local storage for analytics or advertising</li>
+      <li><strong>Clearing Data:</strong> You can clear site data through your browser settings to remove ban status (though your IP may still be blocked)</li>
+    </ul>
+
+    <h2>6. Children's Privacy</h2>
+
+    <p>This application is designed for educational use and may be used by children under 13 with parental or teacher supervision. We:</p>
+    <ul>
+      <li>Do not knowingly collect personal information from children</li>
+      <li>Only collect usernames provided by users (no email, phone, or address)</li>
+      <li>Include content filtering to maintain an appropriate environment</li>
+      <li>Store no permanent records of children's participation</li>
+    </ul>
+
+    <div class="info-box">
+      <strong>For Educators:</strong> We recommend using generic usernames or student IDs rather than full names when using this application in classroom settings.
+    </div>
+
+    <h2>7. Data Security</h2>
+
+    <p>We implement security measures to protect your information:</p>
+    <ul>
+      <li><strong>Memory-Only Storage:</strong> No persistent database reduces security risks</li>
+      <li><strong>Content Filtering:</strong> Automatic filtering of inappropriate usernames (50+ blocked words)</li>
+      <li><strong>XSS Protection:</strong> All user inputs sanitized with HTML entity encoding</li>
+      <li><strong>File Upload Validation:</strong> Custom question uploads validated for security (5MB max, 500 questions)</li>
+      <li><strong>Host Controls:</strong> Hosts can kick players with inappropriate behavior</li>
+      <li><strong>IP Ban System:</strong> Administrators can ban IP addresses for prohibited conduct</li>
+      <li><strong>Session Isolation:</strong> Each game room is isolated with unique 6-character codes</li>
+      <li><strong>Auto-Disconnect:</strong> Players are automatically removed when closing their browser</li>
+    </ul>
+
+    <h2>8. IP Ban System and UUID Tracking</h2>
+
+    <p>For security and conduct enforcement, we maintain both IP and UUID ban systems with separate enforcement mechanisms:</p>
+    
+    <h3>IP-Based Bans (Network-Level)</h3>
+    <ul>
+      <li><strong>IP Collection:</strong> IP addresses collected on connection for ban checking via middleware</li>
+      <li><strong>Ban Storage:</strong> Banned IPs stored in <code>banned-ips.json</code> with IP, player name, reason, timestamp, and optional expiration date</li>
+      <li><strong>Middleware Enforcement:</strong> IP bans checked at request level BEFORE serving any pages (except API endpoints and ban pages)</li>
+      <li><strong>Dedicated Ban Page:</strong> Banned users automatically redirected to <code>ip-banned.html</code> which displays network-level ban information</li>
+      <li><strong>Temporary Bans:</strong> Administrators can set bans with expiration dates (customizable in hours)</li>
+      <li><strong>Auto-Expiration:</strong> Server automatically checks and removes expired IP bans during runtime</li>
+      <li><strong>Browser Persistence:</strong> Ban status stored in localStorage (<code>cbx_quiz_ban_info</code>) to prevent same-browser reconnection</li>
+      <li><strong>Network Scope:</strong> IP bans affect entire networks (e.g., all devices on school Wi-Fi sharing same public IP)</li>
+      <li><strong>Access Restrictions:</strong> IP-banned users can ONLY access:
+        <ul>
+          <li><code>ip-banned.html</code> (network ban information page with expiration countdown if applicable)</li>
+          <li><code>tos.html</code> (Terms of Service)</li>
+          <li><code>privacy.html</code> (Privacy Policy)</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>UUID-Based Bans (Account-Level)</h3>
+    <ul>
+      <li><strong>UUID Generation:</strong> Unique identifier created on first visit, stored in localStorage (<code>cbx_user_uuid</code>)</li>
+      <li><strong>Persistent Tracking:</strong> UUID remains across sessions, name changes, room switches, and network changes</li>
+      <li><strong>Ban Requests:</strong> Game hosts can request UUID bans during gameplay with player name, UUID, IP, and reason</li>
+      <li><strong>Admin Approval:</strong> All ban requests require administrator review with three options:
+        <ul>
+          <li><strong>Ban UUID Only:</strong> Bans the specific account</li>
+          <li><strong>Ban IP Only:</strong> Bans the network (affects all users on same IP)</li>
+          <li><strong>Ban Both:</strong> Comprehensive ban targeting account and network</li>
+        </ul>
+      </li>
+      <li><strong>Ban Storage:</strong> Approved UUID bans stored in <code>banned-uuids.json</code> with UUID, player name, reason, ban timestamp, expiration date, and approver name</li>
+      <li><strong>Request Archive:</strong> All ban requests (approved/rejected) archived in <code>requests-backup.json</code></li>
+      <li><strong>Temporary Account Bans:</strong> Administrators can set UUID bans with custom expiration times (in hours)</li>
+      <li><strong>Dedicated Ban Page:</strong> Banned users automatically redirected to <code>game-banned.html</code> which displays account-specific ban information</li>
+      <li><strong>Multi-Layer Detection:</strong> UUID bans enforced through:
+        <ul>
+          <li>Server connection check with <code>uuid-banned</code> event</li>
+          <li>Client-side periodic checking (every 5 seconds) via localStorage scan</li>
+          <li>Real-time broadcast via <code>check-uuid-ban</code> Socket.IO event when admin approves ban</li>
+          <li>Page-level checking on protected pages (host, presenter, creator, docs)</li>
+        </ul>
+      </li>
+      <li><strong>Real-Time Enforcement:</strong> When admin bans a UUID, server broadcasts to all connected clients immediately for instant enforcement</li>
+      <li><strong>Ban Information Display:</strong> <code>game-banned.html</code> shows player name, ban reason, ban date, expiration countdown (if temporary), and admin contact email for appeals</li>
+      <li><strong>Auto-Expiration:</strong> Server automatically checks and removes expired UUID bans, unblocking accounts instantly when time expires</li>
+      <li><strong>Ban Info Storage:</strong> Complete ban details stored in localStorage (<code>cbx_uuid_ban_info</code>) including player name, reason, timestamps, and expiration</li>
+    </ul>
+
+    <h3>Ban Enforcement and Access Control</h3>
+    <ul>
+      <li><strong>Page-Level Blocking:</strong> UUID-banned accounts cannot access:
+        <ul>
+          <li><code>host.html</code> (game hosting page)</li>
+          <li><code>presenter.html</code> (presentation display)</li>
+          <li><code>creator.html</code> (quiz creation tool)</li>
+          <li><code>docs.html</code> (documentation)</li>
+        </ul>
+      </li>
+      <li><strong>Automatic Redirect:</strong> Protected pages check UUID ban status immediately on load and redirect to <code>game-banned.html</code> if banned</li>
+      <li><strong>Separate Ban Pages:</strong> Two distinct ban pages provide different user experiences:
+        <ul>
+          <li><code>game-banned.html</code>: Account-specific language, ban history, appeal process, temporary vs permanent messaging</li>
+          <li><code>ip-banned.html</code>: Network-focused language, organizational context, school administrator guidance</li>
+        </ul>
+      </li>
+      <li><strong>Blocked Features:</strong> Navigation modal (./ command) disabled for banned users</li>
+      <li><strong>School/Network Bans:</strong> IP bans affect entire networks (e.g., all students on school Wi-Fi)</li>
+      <li><strong>Individual Bans:</strong> UUID bans target specific users regardless of network changes</li>
+      <li><strong>Ban Reasons:</strong> Typically issued for prohibited conduct, harassment, or ToS violations</li>
+      <li><strong>Admin Control:</strong> Only admins with access to port 2777 can manage bans through admin panel</li>
+      <li><strong>Appeal Process:</strong> Banned users can contact administrator at <code>cbgames.xyz@gmail.com</code> to appeal ban decisions</li>
+      <li><strong>Countdown Timers:</strong> Both ban pages display real-time countdown for temporary bans showing days/hours remaining</li>
+      <li><strong>Auto-Unban Checking:</strong> Ban pages automatically check every 10 seconds if expiration has passed and reload to allow access</li>
+    </ul>
+
+    <div class="warning-box">
+      <strong>Important for Schools:</strong> IP bans affect all users behind the same public IP address. In school environments, this typically means the entire school network. Administrators should use bans judiciously and communicate with network administrators about banned IPs.
+    </div>
+
+    <h2>9. Self-Hosting Considerations</h2>
+
+    <p>If you are self-hosting this application:</p>
+    <ul>
+      <li>You are the <strong>data controller</strong> responsible for privacy compliance</li>
+      <li>Consider using HTTPS for encrypted connections</li>
+      <li>Review and customize inappropriate word filters for your context</li>
+      <li>Secure the admin panel (port 3001) with firewall rules</li>
+      <li>Ensure your hosting environment complies with relevant privacy laws</li>
+      <li>Consider implementing access controls if hosting publicly</li>
+      <li>Regularly review and manage banned IP list</li>
+    </ul>
+
+    <h2>10. Your Rights</h2>
+
+    <p>You have the right to:</p>
+    <ul>
+      <li><strong>Access:</strong> View your username and score during gameplay</li>
+      <li><strong>Deletion:</strong> Simply disconnect or close your browser - all data is automatically deleted</li>
+      <li><strong>Opt-Out:</strong> Choose not to participate in any game session</li>
+      <li><strong>Correction:</strong> Rejoin with a different username if desired</li>
+      <li><strong>Ban Appeal:</strong> Contact the server administrator if you believe your ban was issued in error</li>
+    </ul>
+
+    <h2>10. External Links</h2>
+
+    <p>The application may include links to:</p>
+    <ul>
+      <li>Cloudinary (favicon hosting) - see their privacy policy at cloudinary.com</li>
+      <li>cdnjs.cloudflare.com (Socket.IO CDN) - see Cloudflare's privacy policy</li>
+    </ul>
+
+    <p>We are not responsible for the privacy practices of external websites.</p>
+
+    <h2>11. Changes to This Privacy Policy</h2>
+
+    <p>We may update this Privacy Policy from time to time. Changes will be reflected by updating the "Last Updated" date at the top of this page. Continued use of the application after changes constitutes acceptance of the updated policy.</p>
+
+    <h2>12. Contact Information</h2>
+
+    <p>This is an open-source project. For questions, issues, or privacy concerns:</p>
+    <ul>
+      <li>Check the project documentation at <code>/docs.html</code></li>
+      <li>Review the source code on GitHub: cbx-nz/node.js-quiz-server</li>
+      <li>Raise an issue on the GitHub repository</li>
+    </ul>
+
+    <h2>13. Compliance</h2>
+
+    <p>This application is designed to be compliant with:</p>
+    <ul>
+      <li><strong>COPPA</strong> (Children's Online Privacy Protection Act) - minimal data collection</li>
+      <li><strong>GDPR</strong> (General Data Protection Regulation) - memory-only storage, easy opt-out</li>
+      <li><strong>Educational Privacy</strong> - suitable for classroom use with teacher supervision</li>
+    </ul>
+
+    <div class="info-box">
+      <strong>Self-Hosters:</strong> When deploying this application, ensure you comply with privacy laws applicable in your jurisdiction (GDPR, CCPA, COPPA, etc.).
+    </div>
+
+    <h2>14. Open Source Notice</h2>
+
+    <p>This application is open source software. The source code is available for review, modification, and self-hosting. You can inspect exactly what data is collected and how it's used by reviewing the code.</p>
+
+    <p><strong>Repository:</strong> github.com/cbx-nz/node.js-quiz-server</p>
+
+    <a href="/" class="back-link">← Back to Quiz Game</a>
+  </div>
+
+  <script src="ban-check.js"></script>
+  <script src="navigation-modal.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+[
+  {
+    "type": "multi-choice",
+    "question": "Which of the following are programming languages? (Select all that apply)",
+    "options": ["Python", "HTML", "JavaScript", "CSS"],
+    "answer": [0, 2],
+    "explanation": "Python and JavaScript are programming languages. HTML and CSS are markup/styling languages."
+  },
+  {
+    "type": "multi-choice",
+    "question": "Which planets are gas giants in our solar system?",
+    "options": ["Mars", "Jupiter", "Saturn", "Venus"],
+    "answer": [1, 2],
+    "explanation": "Jupiter and Saturn are classified as gas giants."
+  },
+  {
+    "type": "multiple-choice",
+    "question": "What is the capital of France?",
+    "options": ["London", "Berlin", "Paris", "Madrid"],
+    "answer": 2,
+    "explanation": "Paris is the capital of France."
+  }
+]

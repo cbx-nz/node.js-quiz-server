@@ -160,6 +160,27 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+    }
+
+    .player-card-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .player-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .player-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex: 1;
     }
 
     .player-name {
@@ -246,11 +267,43 @@
       border: 2px solid #ddd;
       border-radius: 8px;
       font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .broadcast-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .broadcast-form input:focus {
       outline: none;
       border-color: #ffc107;
+    }
+
+    .btn-broadcast {
+      background: #17a2b8;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .btn-broadcast:hover {
+      background: #138496;
+      transform: translateY(-2px);
+    }
+
+    .btn-broadcast:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .empty-state {
@@ -293,6 +346,32 @@
       border-radius: 8px;
       margin-bottom: 20px;
       text-align: center;
+    }
+
+    .upload-status {
+      margin-top: 10px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .upload-status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .upload-status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .upload-status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
     }
 
     .display-none {
@@ -351,6 +430,18 @@
         </select>
         <div id="subjectInfo" class="subject-info"></div>
       </div>
+
+      <div class="section">
+        <h3>📤 Or Upload Custom Questions</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">
+          Upload your own JSON file with questions. Must be valid JSON array format.
+        </p>
+        <input type="file" id="customJsonUpload" accept=".json" style="display: none;">
+        <button class="btn-secondary" id="uploadJsonButton" style="background: #667eea;">
+          📁 Upload JSON File
+        </button>
+        <div id="uploadStatus" class="upload-status"></div>
+      </div>
       
       <button class="btn-create" id="createRoomButton">Create New Game Room</button>
     </div>
@@ -372,16 +463,38 @@
         <button class="btn-start" id="startButton">▶️ Start Game</button>
         <button class="btn-next" id="nextButton" disabled>➡️ Next Question</button>
         <button class="btn-end" id="endButton" disabled>⏹️ End Game</button>
+        <button class="btn-end" id="endRoomButton" style="background: #dc3545; display: none;">🚪 End Room</button>
         <button class="btn-presenter" id="presenterButton">🖥️ Open Presenter View</button>
         <button class="btn-next reveal-button" id="revealButton" disabled>👁️ Reveal Answer</button>
+      </div>
+
+      <!-- Change Questions Section (shown after game ends) -->
+      <div id="changeQuestionsSection" class="section" style="display: none;">
+        <h3>🔄 Change Questions for Next Game</h3>
+        <div style="margin-bottom: 15px;">
+          <select id="newSubjectSelect" class="subject-select">
+            <option value="">Loading subjects...</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 15px;">
+          <input type="file" id="newCustomJsonUpload" accept=".json" style="display: none;">
+          <button class="btn-secondary" id="newUploadJsonButton" style="background: #667eea;">
+            📁 Upload New JSON File
+          </button>
+          <div id="newUploadStatus" class="upload-status"></div>
+        </div>
       </div>
 
       <!-- Broadcast Message -->
       <div class="section">
         <h3>📢 Broadcast Message</h3>
         <div class="broadcast-form">
-          <input type="text" id="broadcastInput" placeholder="Type a message to all players...">
-          <button class="btn-broadcast" id="broadcastButton">Send</button>
+          <input type="text" id="broadcastInput" placeholder="Type a message...">
+          <div class="broadcast-buttons">
+            <button class="btn-broadcast" id="broadcastButton">📤 Send to All Players</button>
+            <button class="btn-broadcast" id="broadcastPresenterButton">🖥️ Send to Presenter</button>
+            <button class="btn-broadcast" id="broadcastSelectedButton" disabled>👥 Send to Selected</button>
+          </div>
         </div>
       </div>
 
@@ -428,6 +541,7 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script src="ban-check.js"></script>
   <script src="host.js"></script>
   <script src="navigation-modal.js"></script>
 </body>
