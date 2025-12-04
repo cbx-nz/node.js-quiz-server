@@ -584,7 +584,7 @@
 
     // Clear all bans
     async function clearAllBans() {
-      if (!confirm('Are you sure you want to remove ALL bans? This cannot be undone.')) {
+      if (!confirm('Are you sure you want to remove ALL bans (IP and UUID)? This cannot be undone.')) {
         return;
       }
 
@@ -596,8 +596,9 @@
         const result = await response.json();
 
         if (result.success) {
-          showStatus('All bans cleared successfully', 'success');
+          showStatus('All IP and UUID bans cleared successfully', 'success');
           loadBannedIPs();
+          loadBannedUUIDs();
         } else {
           showStatus(result.error || 'Failed to clear bans', 'error');
         }

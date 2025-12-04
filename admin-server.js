@@ -395,14 +395,18 @@ adminApp.post('/api/admin/import-bans', (req, res) => {
 // Clear all bans
 adminApp.post('/api/admin/clear-bans', (req, res) => {
   bannedIPs = [];
+  bannedUUIDs = [];
   
-  if (saveBannedIPs(bannedIPs)) {
-    console.log('All bans cleared');
-    res.json({ success: true });
+  const ipsSaved = saveBannedIPs(bannedIPs);
+  const uuidsSaved = saveBannedUUIDs(bannedUUIDs);
+  
+  if (ipsSaved && uuidsSaved) {
+    console.log('All bans cleared (IPs and UUIDs)');
+    res.json({ success: true, message: 'All IP and UUID bans cleared' });
   } else {
     res.status(500).json({ 
       success: false, 
-      error: 'Failed to clear bans' 
+      error: 'Failed to clear all bans' 
     });
   }
 });

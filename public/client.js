@@ -608,6 +608,11 @@ socket.on('check-uuid-ban', (data) => {
       timestamp: Date.now()
     }));
     
+    // Disconnect socket before redirecting
+    if (socket && socket.connected) {
+      socket.disconnect();
+    }
+    
     // Redirect to ban page
     window.location.href = '/game-banned.html';
   }

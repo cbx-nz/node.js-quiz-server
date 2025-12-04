@@ -26,6 +26,24 @@ app.use((req, res, next) => {
   next();
 });
 
+/**
+ * Normalize IP address to handle localhost variations
+ * Converts ::1, ::ffff:127.0.0.1, and 127.0.0.1 to a consistent format
+ */
+function normalizeIP(ip) {
+  if (!ip) return ip;
+  
+  // Remove IPv6 prefix for IPv4-mapped addresses
+  let normalized = ip.replace('::ffff:', '');
+  
+  // Convert IPv6 localhost (::1) to IPv4 localhost (127.0.0.1)
+  if (normalized === '::1') {
+    normalized = '127.0.0.1';
+  }
+  
+  return normalized;
+}
+
 // IP ban middleware - check IP for page access (but not API endpoints)
 app.use((req, res, next) => {
   // Skip IP check for API endpoints to prevent loops in devtunnel scenarios
@@ -39,8 +57,10 @@ app.use((req, res, next) => {
     return next();
   }
   
-  // Check if requester's IP is banned
-  const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  // Normalize client IP to handle localhost variations
+  let clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  clientIP = normalizeIP(clientIP);
+  
   const ipBanInfo = adminServer.getBanInfo(clientIP);
   
   if (ipBanInfo) {
@@ -50,9 +70,6 @@ app.use((req, res, next) => {
   
   next();
 });
-
-// Serve static files from the public directory
-app.use(express.static('public'));
 
 // API endpoint to check ban status (UUID only - IP checked via middleware)
 // Note: This endpoint only checks the UUID ban status, not the requester's IP.
@@ -69,6 +86,26 @@ app.get('/api/check-ban', (req, res) => {
       uuid: userUUID,
       reason: uuidBanInfo.reason,
       timestamp: uuidBanInfo.timestamp
+    });
+  }
+  
+  res.json({ banned: false });
+});
+
+// API endpoint to check IP ban status (for ip-banned.html page only)
+app.get('/api/check-ip-ban', (req, res) => {
+  let clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  clientIP = normalizeIP(clientIP);
+  const ipBanInfo = adminServer.getBanInfo(clientIP);
+  
+  if (ipBanInfo) {
+    return res.json({
+      banned: true,
+      type: 'ip',
+      ip: clientIP,
+      reason: ipBanInfo.reason,
+      bannedAt: ipBanInfo.bannedAt,
+      unbanDate: ipBanInfo.unbanDate
     });
   }
   
@@ -182,6 +219,9 @@ app.post('/api/validate-questions', (req, res) => {
     });
   }
 });
+
+// Serve static files from the public directory (AFTER API routes)
+app.use(express.static('public'));
 
 // Load all question files
 const subjects = {};
@@ -320,8 +360,9 @@ function calculateScore(room, timestamp) {
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
-  // Get client IP address
-  const clientIP = (socket.handshake.address || '').replace('::ffff:', '');
+  // Get client IP address and normalize it
+  let clientIP = socket.handshake.address || '';
+  clientIP = normalizeIP(clientIP);
   console.log(`User connected: ${socket.id} from IP: ${clientIP}`);
 
   // Check if IP is banned
@@ -529,7 +570,8 @@ io.on('connection', (socket) => {
     // Get player's UUID and IP from room data and socket
     const playerUUID = player.userUUID || 'unknown';
     const playerSocket = io.sockets.sockets.get(socketId);
-    const playerIP = playerSocket ? (playerSocket.handshake.headers['x-forwarded-for'] || playerSocket.handshake.address) : 'unknown';
+    let playerIP = playerSocket ? (playerSocket.handshake.headers['x-forwarded-for'] || playerSocket.handshake.address) : 'unknown';
+    playerIP = normalizeIP(playerIP);
 
     // Create ban request
     const banRequest = {
@@ -1043,7 +1085,18 @@ io.on('connection', (socket) => {
 // Update global stats for admin panel
 function updateGlobalStats() {
   global.activeRooms = Object.keys(rooms).length;
-  global.connectedUsers = io.engine.clientsCount || 0;
+  
+  // Count only players and hosts (not presenters or other connections)
+  let playerAndHostCount = 0;
+  for (const roomCode in rooms) {
+    const room = rooms[roomCode];
+    // Add 1 for the host
+    playerAndHostCount += 1;
+    // Add the number of players
+    playerAndHostCount += Object.keys(room.players).length;
+  }
+  
+  global.connectedUsers = playerAndHostCount;
 }
 
 // Update stats every 5 seconds

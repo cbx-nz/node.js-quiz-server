@@ -346,12 +346,8 @@
     // Check if user has been unbanned (IP bans only)
     async function checkUnbanStatus() {
       try {
-        // For IP bans, we don't pass UUID - server checks requester's IP via middleware
-        // But we still check UUID in case of mixed ban
-        const userUUID = localStorage.getItem('cbx_user_uuid') || '';
-        
-        // Call the ban check API
-        const response = await fetch(`/api/check-ban?uuid=${encodeURIComponent(userUUID)}`);
+        // Check IP ban status using dedicated endpoint
+        const response = await fetch('/api/check-ip-ban');
         const data = await response.json();
         
         if (!data.banned) {
